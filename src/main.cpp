@@ -11,7 +11,7 @@
 #define BLINDS_NEUTRAL_LED 6 // LED indicating blinds are neutral
 
 // Dummy sensor values (can be changed for testing)
-bool roomOccupied = true;           // Motion sensor: true = occupied, false = not occupied
+bool roomOccupied = false;           // Motion sensor: true = occupied, false = not occupied
 float indoorTemp = 25.0;            // Indoor temperature in Celsius
 float outdoorTemp = 20.0;           // Outdoor temperature in Celsius
 float indoorHumidity = 50.0;        // Indoor humidity percentage
@@ -52,6 +52,19 @@ void setup() {
   digitalWrite(BLINDS_NEUTRAL_LED, LOW);
   
   Serial.println("System initialized. Starting control loop...");
+  Serial.println("\n=== Serial Command Interface ===");
+  Serial.println("Commands:");
+  Serial.println("  set <variable> <value>  - Set sensor value");
+  Serial.println("  get                    - Show all sensor values");
+  Serial.println("  help                   - Show this help");
+  Serial.println("Examples:");
+  Serial.println("  set roomOccupied true");
+  Serial.println("  set indoorTemp 26.5");
+  Serial.println("  set outdoorTemp 22.0");
+  Serial.println("  set indoorHumidity 60.0");
+  Serial.println("  set outdoorHumidity 80.0");
+  Serial.println("  set sunlightIntense false");
+  Serial.println("================================");
   delay(1000);
 }
 
@@ -80,17 +93,133 @@ void updateBlindsLEDs(BlindsState state) {
   }
 }
 
+void processSerialCommands() {
+  // Check if serial data is available
+  if (Serial.available() > 0) {
+    String command = Serial.readStringUntil('\n');
+    command.trim();
+    command.toLowerCase();
+    
+    if (command.length() == 0) return;
+    
+    // Parse "set <variable> <value>" command
+    if (command.startsWith("set ")) {
+      command = command.substring(4); // Remove "set "
+      int spaceIndex = command.indexOf(' ');
+      if (spaceIndex > 0) {
+        String varName = command.substring(0, spaceIndex);
+        String valueStr = command.substring(spaceIndex + 1);
+        valueStr.trim();
+        
+        // Parse boolean values
+        if (varName == "roomoccupied") {
+          if (valueStr == "true" || valueStr == "1") {
+            roomOccupied = true;
+            Serial.println("OK: roomOccupied set to true");
+          } else if (valueStr == "false" || valueStr == "0") {
+            roomOccupied = false;
+            Serial.println("OK: roomOccupied set to false");
+          } else {
+            Serial.println("ERROR: Invalid value. Use 'true' or 'false'");
+          }
+        }
+        else if (varName == "sunlightintense") {
+          if (valueStr == "true" || valueStr == "1") {
+            sunlightIntense = true;
+            Serial.println("OK: sunlightIntense set to true");
+          } else if (valueStr == "false" || valueStr == "0") {
+            sunlightIntense = false;
+            Serial.println("OK: sunlightIntense set to false");
+          } else {
+            Serial.println("ERROR: Invalid value. Use 'true' or 'false'");
+          }
+        }
+        // Parse float values
+        else if (varName == "indoortemp") {
+          float val = valueStr.toFloat();
+          if (val != 0.0 || valueStr == "0" || valueStr == "0.0") {
+            indoorTemp = val;
+            Serial.print("OK: indoorTemp set to ");
+            Serial.println(indoorTemp);
+            isHotInside = (indoorTemp >= HOT_TEMP_THRESHOLD);
+          } else {
+            Serial.println("ERROR: Invalid temperature value");
+          }
+        }
+        else if (varName == "outdoortemp") {
+          float val = valueStr.toFloat();
+          if (val != 0.0 || valueStr == "0" || valueStr == "0.0") {
+            outdoorTemp = val;
+            Serial.print("OK: outdoorTemp set to ");
+            Serial.println(outdoorTemp);
+          } else {
+            Serial.println("ERROR: Invalid temperature value");
+          }
+        }
+        else if (varName == "indoorhumidity") {
+          float val = valueStr.toFloat();
+          if (val != 0.0 || valueStr == "0" || valueStr == "0.0") {
+            indoorHumidity = val;
+            Serial.print("OK: indoorHumidity set to ");
+            Serial.println(indoorHumidity);
+          } else {
+            Serial.println("ERROR: Invalid humidity value");
+          }
+        }
+        else if (varName == "outdoorhumidity") {
+          float val = valueStr.toFloat();
+          if (val != 0.0 || valueStr == "0" || valueStr == "0.0") {
+            outdoorHumidity = val;
+            Serial.print("OK: outdoorHumidity set to ");
+            Serial.println(outdoorHumidity);
+          } else {
+            Serial.println("ERROR: Invalid humidity value");
+          }
+        }
+        else {
+          Serial.println("ERROR: Unknown variable name");
+          Serial.println("Available: roomOccupied, indoorTemp, outdoorTemp, indoorHumidity, outdoorHumidity, sunlightIntense");
+        }
+      } else {
+        Serial.println("ERROR: Invalid command format. Use: set <variable> <value>");
+      }
+    }
+    // Parse "get" command
+    else if (command == "get" || command == "status") {
+      Serial.println("\n--- Current Sensor Values ---");
+      Serial.print("roomOccupied: "); Serial.println(roomOccupied ? "true" : "false");
+      Serial.print("indoorTemp: "); Serial.print(indoorTemp); Serial.println("°C");
+      Serial.print("outdoorTemp: "); Serial.print(outdoorTemp); Serial.println("°C");
+      Serial.print("indoorHumidity: "); Serial.print(indoorHumidity); Serial.println("%");
+      Serial.print("outdoorHumidity: "); Serial.print(outdoorHumidity); Serial.println("%");
+      Serial.print("sunlightIntense: "); Serial.println(sunlightIntense ? "true" : "false");
+      Serial.print("isHotInside: "); Serial.println(isHotInside ? "true" : "false");
+    }
+    // Parse "help" command
+    else if (command == "help") {
+      Serial.println("\n=== Available Commands ===");
+      Serial.println("set <variable> <value>  - Set sensor value");
+      Serial.println("  Variables:");
+      Serial.println("    roomOccupied        - true/false");
+      Serial.println("    indoorTemp         - float (e.g., 25.5)");
+      Serial.println("    outdoorTemp        - float (e.g., 20.0)");
+      Serial.println("    indoorHumidity     - float (e.g., 50.0)");
+      Serial.println("    outdoorHumidity    - float (e.g., 70.0)");
+      Serial.println("    sunlightIntense    - true/false");
+      Serial.println("get                    - Show all sensor values");
+      Serial.println("help                   - Show this help");
+      Serial.println("==========================");
+    }
+    else {
+      Serial.println("ERROR: Unknown command. Type 'help' for available commands.");
+    }
+  }
+}
+
 void readSensorData() {
   // In a real system, this would read from actual sensors
-  // For now, we use dummy values that can be modified for testing
-  
-  // You can modify these values here to test different scenarios:
-  roomOccupied = true;        // Change to false to test energy saving mode
-  indoorTemp = 25.0;         // Change to test temperature comparisons
-  outdoorTemp = 20.0;        // Change to test temperature comparisons
-  indoorHumidity = 50.0;
-  outdoorHumidity = 70.0;    // Change to >75 to test high humidity
-  sunlightIntense = true;    // Change to test sunlight control
+  // Values can now be modified via serial commands at runtime
+  // Only update derived values here
   isHotInside = (indoorTemp >= HOT_TEMP_THRESHOLD);
   
   Serial.println("\n--- Sensor Readings ---");
@@ -183,6 +312,9 @@ void controlBlinds() {
 }
 
 void loop() {
+  // Process serial commands (non-blocking)
+  processSerialCommands();
+  
   // Main control loop following the flowchart
   
   // Step 1: Read Sensor Data
@@ -206,5 +338,10 @@ void loop() {
   Serial.println("==============================");
   
   // Step 5: Wait / Loop (delay before next iteration)
-  delay(5000); // Wait 5 seconds before next sensor reading
+  // Process commands during delay to be responsive
+  unsigned long startTime = millis();
+  while (millis() - startTime < 5000) {
+    processSerialCommands();
+    delay(100); // Small delay to avoid busy-waiting
+  }
 }
