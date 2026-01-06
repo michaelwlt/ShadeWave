@@ -63,7 +63,7 @@ void setup() {
   Serial.println(F("\n=== Serial Command Interface ==="));
   Serial.println(F("Commands:"));
   Serial.println(F("  set <variable> <value>  - Set sensor value"));
-  Serial.println(F("  get                    - Show all sensor values"));
+  Serial.println(F("  status                 - Show all sensor values"));
   Serial.println(F("  help                   - Show this help"));
   Serial.println(F("Examples:"));
   Serial.println(F("  set roomOccupied true"));

@@ -166,7 +166,7 @@ void SerialCommandProcessor::process() {
       }
     }
     // Parse "get" command
-    else if (strEquals(command, "get") || strEquals(command, "status")) {
+    else if (strEquals(command, "status")) {
       Serial.println(F("\n--- Current Sensor Values ---"));
       Serial.print(F("roomOccupied: ")); Serial.println(sensors.getRoomOccupied() ? F("true") : F("false"));
       Serial.print(F("indoorTemp: ")); Serial.print(sensors.getIndoorTemp()); Serial.println(F("°C"));
