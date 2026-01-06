@@ -17,7 +17,7 @@ const int BLINDS_NEUTRAL_LED = 6; // LED indicating blinds are neutral
 // Command buffer size
 const int CMD_BUFFER_SIZE = 64;
 
-// Servo configuration
+// Servo configuration for vent
 const int VENT_SERVO_PIN = 9;
 const int VENT_SERVO_OPEN_ANGLE = 90;    // degrees when vent is open
 const int VENT_SERVO_CLOSED_ANGLE = 0;   // degrees when vent is closed
