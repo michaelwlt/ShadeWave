@@ -22,6 +22,12 @@ const int VENT_SERVO_PIN = 9;
 const int VENT_SERVO_OPEN_ANGLE = 90;    // degrees when vent is open
 const int VENT_SERVO_CLOSED_ANGLE = 0;   // degrees when vent is closed
 
+// Servo configuration for blinds
+const int BLINDS_SERVO_PIN = 10;
+const int BLINDS_SERVO_OPEN_ANGLE = 180;     // degrees when blinds are open
+const int BLINDS_SERVO_NEUTRAL_ANGLE = 90;   // degrees when blinds are neutral
+const int BLINDS_SERVO_CLOSED_ANGLE = 0;     // degrees when blinds are closed
+
 // Thresholds
 const float HIGH_HUMIDITY_THRESHOLD = 75.0;  // Humidity percentage considered "high"
 const float HOT_TEMP_THRESHOLD = 24.0;       // Temperature considered "hot" for summer mode

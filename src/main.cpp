@@ -11,7 +11,7 @@ using namespace ShadeWave;
 // Global instances (required by Arduino framework)
 Sensor::SensorData sensors;
 Controller::VentController vent(Config::VENT_OPEN_LED, Config::VENT_CLOSED_LED, Config::VENT_SERVO_PIN);
-Controller::BlindsController blinds(Config::BLINDS_OPEN_LED, Config::BLINDS_CLOSED_LED, Config::BLINDS_NEUTRAL_LED);
+Controller::BlindsController blinds(Config::BLINDS_OPEN_LED, Config::BLINDS_CLOSED_LED, Config::BLINDS_NEUTRAL_LED, Config::BLINDS_SERVO_PIN);
 SerialCommand::SerialCommandProcessor cmdProcessor(sensors);
 State::SystemState systemState;
 
@@ -60,6 +60,10 @@ void setup() {
   Serial.println(F("Testing Pin 9 (Vent Servo)..."));
   Serial.println(F("  Sweeping: CLOSED -> OPEN -> CLOSED"));
   vent.testServo();
+  
+  Serial.println(F("Testing Pin 10 (Blinds Servo)..."));
+  Serial.println(F("  Sweeping: CLOSED -> NEUTRAL -> OPEN -> NEUTRAL"));
+  blinds.testServo();
   
   Serial.println(F("LED and Servo test complete. Starting system in 3 seconds..."));
   delay(3000);

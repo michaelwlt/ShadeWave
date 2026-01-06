@@ -2,6 +2,7 @@
 #define BLINDS_CONTROLLER_H
 
 #include <Arduino.h>
+#include <Servo.h>
 
 namespace ShadeWave {
 namespace Sensor {
@@ -23,15 +24,18 @@ private:
   int openPin;
   int closedPin;
   int neutralPin;
+  int servoPin;
+  Servo servoMotor;
   static const float HOT_TEMP_THRESHOLD;
   
   void updateBlindsLEDs(BlindsState state);
 
 public:
-  BlindsController(int openPin, int closedPin, int neutralPin);
+  BlindsController(int openPin, int closedPin, int neutralPin, int servoPin);
   
   void initialize();
   void update(const Sensor::SensorData& sensors);
+  void testServo();  // Test sweep for startup verification
   
   BlindsState getState() const { return blindsState; }
   bool hasChanged() const { return blindsState != prevBlindsState; }

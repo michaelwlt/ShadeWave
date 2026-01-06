@@ -7,12 +7,13 @@ namespace Controller {
 
 const float BlindsController::HOT_TEMP_THRESHOLD = ShadeWave::Config::HOT_TEMP_THRESHOLD;
 
-BlindsController::BlindsController(int openPin, int closedPin, int neutralPin)
+BlindsController::BlindsController(int openPin, int closedPin, int neutralPin, int servoPin)
   : blindsState(BlindsState::NEUTRAL),
     prevBlindsState(BlindsState::NEUTRAL),
     openPin(openPin),
     closedPin(closedPin),
-    neutralPin(neutralPin) {
+    neutralPin(neutralPin),
+    servoPin(servoPin) {
 }
 
 void BlindsController::initialize() {
@@ -22,6 +23,10 @@ void BlindsController::initialize() {
   digitalWrite(openPin, LOW);
   digitalWrite(closedPin, LOW);
   digitalWrite(neutralPin, LOW);
+  
+  // Initialize servo motor
+  servoMotor.attach(servoPin);
+  servoMotor.write(ShadeWave::Config::BLINDS_SERVO_NEUTRAL_ANGLE);
 }
 
 void BlindsController::updateBlindsLEDs(BlindsState state) {
@@ -30,16 +35,19 @@ void BlindsController::updateBlindsLEDs(BlindsState state) {
   digitalWrite(closedPin, LOW);
   digitalWrite(neutralPin, LOW);
   
-  // Turn on the appropriate LED
+  // Turn on the appropriate LED and set servo position
   switch(state) {
     case BlindsState::OPEN:
       digitalWrite(openPin, HIGH);
+      servoMotor.write(ShadeWave::Config::BLINDS_SERVO_OPEN_ANGLE);
       break;
     case BlindsState::CLOSED:
       digitalWrite(closedPin, HIGH);
+      servoMotor.write(ShadeWave::Config::BLINDS_SERVO_CLOSED_ANGLE);
       break;
     case BlindsState::NEUTRAL:
       digitalWrite(neutralPin, HIGH);
+      servoMotor.write(ShadeWave::Config::BLINDS_SERVO_NEUTRAL_ANGLE);
       break;
   }
 }
@@ -97,6 +105,18 @@ void BlindsController::printStatus(const Sensor::SensorData& sensors, bool force
     
     prevBlindsState = blindsState;
   }
+}
+
+void BlindsController::testServo() {
+  // Sweep servo through all three positions for testing
+  servoMotor.write(ShadeWave::Config::BLINDS_SERVO_CLOSED_ANGLE);
+  delay(500);
+  servoMotor.write(ShadeWave::Config::BLINDS_SERVO_NEUTRAL_ANGLE);
+  delay(500);
+  servoMotor.write(ShadeWave::Config::BLINDS_SERVO_OPEN_ANGLE);
+  delay(500);
+  servoMotor.write(ShadeWave::Config::BLINDS_SERVO_NEUTRAL_ANGLE);
+  delay(500);
 }
 
 } // namespace Controller
