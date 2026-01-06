@@ -176,7 +176,7 @@ void SerialCommandProcessor::process() {
         Serial.println(F("ERROR: Invalid command format. Use: set <variable> <value>"));
       }
     }
-    // Parse "get" command
+    // Parse "status" command
     else if (strEquals(command, "status")) {
       Serial.println(F("\n--- Current Sensor Values ---"));
       Serial.print(F("roomOccupied: ")); Serial.println(sensors.getRoomOccupied() ? F("true") : F("false"));

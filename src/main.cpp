@@ -77,8 +77,22 @@ void setup() {
 }
 
 void loop() {
-  // Process serial commands (non-blocking)
+  // Process serial commands continuously (non-blocking)
   cmdProcessor.process();
+  
+  // Non-blocking timing: only run main control loop every 5 seconds
+  static unsigned long lastMainLoopTime = 0;
+  const unsigned long MAIN_LOOP_INTERVAL = 5000; // 5 seconds
+  
+  // Check if enough time has passed since last main loop execution
+  unsigned long currentTime = millis();
+  if (currentTime - lastMainLoopTime < MAIN_LOOP_INTERVAL) {
+    // Not enough time has passed, just process commands and return
+    return;
+  }
+  
+  // Update last execution time
+  lastMainLoopTime = currentTime;
   
   // Main control loop following the flowchart
   
@@ -99,13 +113,5 @@ void loop() {
   // Mark first run as complete
   if (systemState.isFirstRun()) {
     systemState.setFirstRunComplete();
-  }
-  
-  // Step 5: Wait / Loop (delay before next iteration)
-  // Process commands during delay to be responsive
-  unsigned long startTime = millis();
-  while (millis() - startTime < 5000) {
-    cmdProcessor.process();
-    delay(100); // Small delay to avoid busy-waiting
   }
 }
