@@ -4,8 +4,6 @@
 namespace ShadeWave {
 namespace Sensor {
 
-const float SensorData::HOT_TEMP_THRESHOLD = ShadeWave::Config::HOT_TEMP_THRESHOLD;
-
 SensorData::SensorData() 
   : roomOccupied(false),
     indoorTemp(25.0),
@@ -20,7 +18,8 @@ SensorData::SensorData()
     prevIndoorHumidity(0.0),
     prevOutdoorHumidity(0.0),
     prevSunlightIntense(false),
-    prevIsHotInside(false) {
+    prevIsHotInside(false),
+    desiredTempThreshold(ShadeWave::Config::HOT_TEMP_THRESHOLD) {
   updateDerivedValues();
 }
 
@@ -49,8 +48,13 @@ void SensorData::setSunlightIntense(bool value) {
   sunlightIntense = value;
 }
 
+void SensorData::setDesiredTempThreshold(float value) {
+  desiredTempThreshold = value;
+  updateDerivedValues(); // Recalculate isHotInside with new threshold
+}
+
 void SensorData::updateDerivedValues() {
-  isHotInside = (indoorTemp >= HOT_TEMP_THRESHOLD);
+  isHotInside = (indoorTemp >= desiredTempThreshold);
 }
 
 bool SensorData::hasChanged() const {
