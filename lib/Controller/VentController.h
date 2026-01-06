@@ -2,6 +2,7 @@
 #define VENT_CONTROLLER_H
 
 #include <Arduino.h>
+#include <Servo.h>
 
 namespace ShadeWave {
 namespace Sensor {
@@ -16,15 +17,18 @@ private:
   bool prevVentOpen;
   int openPin;
   int closedPin;
+  int servoPin;
+  Servo servoMotor;
   static const float HIGH_HUMIDITY_THRESHOLD;
   
-  void updateVentLEDs(bool open);
+  void updateVentOutputs(bool open);
 
 public:
-  VentController(int openPin, int closedPin);
+  VentController(int openPin, int closedPin, int servoPin);
   
   void initialize();
   void update(const Sensor::SensorData& sensors);
+  void testServo();  // Test sweep for startup verification
   
   bool isOpen() const { return ventOpen; }
   bool hasChanged() const { return ventOpen != prevVentOpen; }

@@ -17,6 +17,11 @@ const int BLINDS_NEUTRAL_LED = 6; // LED indicating blinds are neutral
 // Command buffer size
 const int CMD_BUFFER_SIZE = 64;
 
+// Servo configuration
+const int VENT_SERVO_PIN = 9;
+const int VENT_SERVO_OPEN_ANGLE = 90;    // degrees when vent is open
+const int VENT_SERVO_CLOSED_ANGLE = 0;   // degrees when vent is closed
+
 // Thresholds
 const float HIGH_HUMIDITY_THRESHOLD = 75.0;  // Humidity percentage considered "high"
 const float HOT_TEMP_THRESHOLD = 24.0;       // Temperature considered "hot" for summer mode
