@@ -52,7 +52,6 @@ void StateReporter::reportIfChanged(const Sensor::SensorData& sensors,
                                     const Controller::VentController& vent,
                                     const Controller::BlindsController& blinds) {
   if (needsReport || hasChanged(sensors, vent, blinds)) {
-    printSensorReadings(sensors);
     printVentLogic(sensors, vent);
     printBlindsLogic(sensors, blinds);
     printSystemSummary(vent, blinds);
@@ -60,17 +59,6 @@ void StateReporter::reportIfChanged(const Sensor::SensorData& sensors,
     captureSnapshot(sensors, vent, blinds);
     needsReport = false;
   }
-}
-
-void StateReporter::printSensorReadings(const Sensor::SensorData& sensors) {
-  Serial.println(F("\n--- Sensor Readings ---"));
-  Serial.print(F("Room Occupied: ")); Serial.println(sensors.getRoomOccupied() ? F("Yes") : F("No"));
-  Serial.print(F("Indoor Temp: ")); Serial.print(sensors.getIndoorTemp()); Serial.println(F("°C"));
-  Serial.print(F("Outdoor Temp: ")); Serial.print(sensors.getOutdoorTemp()); Serial.println(F("°C"));
-  Serial.print(F("Indoor Humidity: ")); Serial.print(sensors.getIndoorHumidity()); Serial.println(F("%"));
-  Serial.print(F("Outdoor Humidity: ")); Serial.print(sensors.getOutdoorHumidity()); Serial.println(F("%"));
-  Serial.print(F("Sunlight Intense: ")); Serial.println(sensors.getSunlightIntense() ? F("Yes") : F("No"));
-  Serial.print(F("Hot Inside: ")); Serial.println(sensors.getIsHotInside() ? F("Yes (Summer)") : F("No (Winter)"));
 }
 
 void StateReporter::printVentLogic(const Sensor::SensorData& sensors, const Controller::VentController& vent) {
@@ -108,10 +96,10 @@ void StateReporter::printBlindsLogic(const Sensor::SensorData& sensors, const Co
     if (sensors.getSunlightIntense()) {
       Serial.println(F("Sunlight is intense"));
       if (sensors.getIsHotInside()) {
-        Serial.println(F("Hot inside (Summer Mode)"));
+        Serial.println(F("Hot inside"));
         Serial.println(F("Action: Close Blinds - Block Heat"));
       } else {
-        Serial.println(F("Not hot inside (Winter Mode)"));
+        Serial.println(F("Not hot inside"));
         Serial.println(F("Action: Open Blinds - Solar Heating"));
       }
     } else {

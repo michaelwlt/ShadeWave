@@ -40,7 +40,6 @@ private:
                        const Controller::VentController& vent,
                        const Controller::BlindsController& blinds);
   
-  void printSensorReadings(const Sensor::SensorData& sensors);
   void printVentLogic(const Sensor::SensorData& sensors, const Controller::VentController& vent);
   void printBlindsLogic(const Sensor::SensorData& sensors, const Controller::BlindsController& blinds);
   void printSystemSummary(const Controller::VentController& vent, const Controller::BlindsController& blinds);
