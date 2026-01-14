@@ -14,12 +14,10 @@ namespace Controller {
 class VentController {
 private:
   bool ventOpen;
-  bool prevVentOpen;
   int openPin;
   int closedPin;
   int servoPin;
   Servo servoMotor;
-  static const float HIGH_HUMIDITY_THRESHOLD;
   
   void updateVentOutputs(bool open);
 
@@ -31,13 +29,9 @@ public:
   void testServo();  // Test sweep for startup verification
   
   bool isOpen() const { return ventOpen; }
-  bool hasChanged() const { return ventOpen != prevVentOpen; }
-  
-  void printStatus(const Sensor::SensorData& sensors, bool forcePrint = false);
 };
 
 } // namespace Controller
 } // namespace ShadeWave
 
 #endif // VENT_CONTROLLER_H
-

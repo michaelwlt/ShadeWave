@@ -4,7 +4,7 @@
 #include <VentController.h>
 #include <BlindsController.h>
 #include <SerialCommandProcessor.h>
-#include <SystemState.h>
+#include <StateReporter.h>
 
 using namespace ShadeWave;
 
@@ -13,7 +13,7 @@ Sensor::SensorData sensors;
 Controller::VentController vent(Config::VENT_OPEN_LED, Config::VENT_CLOSED_LED, Config::VENT_SERVO_PIN);
 Controller::BlindsController blinds(Config::BLINDS_OPEN_LED, Config::BLINDS_CLOSED_LED, Config::BLINDS_NEUTRAL_LED, Config::BLINDS_SERVO_PIN);
 SerialCommand::SerialCommandProcessor cmdProcessor(sensors);
-State::SystemState systemState;
+State::StateReporter stateReporter;
 
 void setup() {
   // Initialize serial communication for debugging
@@ -70,6 +70,11 @@ void setup() {
   Serial.println(F("System initialized. Starting control loop..."));
   cmdProcessor.printHelp();
   delay(1000);
+  
+  // Initial state update and report
+  vent.update(sensors);
+  blinds.update(sensors);
+  stateReporter.reportIfChanged(sensors, vent, blinds);
 }
 
 void loop() {
@@ -90,24 +95,12 @@ void loop() {
   // Update last execution time
   lastMainLoopTime = currentTime;
   
-  // Main control loop following the flowchart
+  // Main control loop
   
-  // Step 1: Read Sensor Data
-  sensors.printReadings(systemState.isFirstRun());
-  
-  // Step 2: Control Vents (based on occupancy and temperature)
+  // Update controllers based on current sensor state
   vent.update(sensors);
-  vent.printStatus(sensors, systemState.isFirstRun());
-  
-  // Step 3: Control Blinds (based on occupancy and sunlight)
   blinds.update(sensors);
-  blinds.printStatus(sensors, systemState.isFirstRun());
   
-  // Step 4: Display current system state (only if changed)
-  systemState.printSystemState(vent, blinds, systemState.isFirstRun());
-  
-  // Mark first run as complete
-  if (systemState.isFirstRun()) {
-    systemState.setFirstRunComplete();
-  }
+  // Report if anything changed
+  stateReporter.reportIfChanged(sensors, vent, blinds);
 }

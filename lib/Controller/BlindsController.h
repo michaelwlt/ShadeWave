@@ -20,13 +20,11 @@ enum class BlindsState {
 class BlindsController {
 private:
   BlindsState blindsState;
-  BlindsState prevBlindsState;
   int openPin;
   int closedPin;
   int neutralPin;
   int servoPin;
   Servo servoMotor;
-  static const float HOT_TEMP_THRESHOLD;
   
   void updateBlindsLEDs(BlindsState state);
 
@@ -38,13 +36,9 @@ public:
   void testServo();  // Test sweep for startup verification
   
   BlindsState getState() const { return blindsState; }
-  bool hasChanged() const { return blindsState != prevBlindsState; }
-  
-  void printStatus(const Sensor::SensorData& sensors, bool forcePrint = false);
 };
 
 } // namespace Controller
 } // namespace ShadeWave
 
 #endif // BLINDS_CONTROLLER_H
-

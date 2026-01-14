@@ -12,13 +12,6 @@ SensorData::SensorData()
     outdoorHumidity(70.0),
     sunlightIntense(true),
     isHotInside(false),
-    prevRoomOccupied(false),
-    prevIndoorTemp(0.0),
-    prevOutdoorTemp(0.0),
-    prevIndoorHumidity(0.0),
-    prevOutdoorHumidity(0.0),
-    prevSunlightIntense(false),
-    prevIsHotInside(false),
     desiredTempThreshold(ShadeWave::Config::HOT_TEMP_THRESHOLD) {
   updateDerivedValues();
 }
@@ -57,40 +50,5 @@ void SensorData::updateDerivedValues() {
   isHotInside = (indoorTemp >= desiredTempThreshold);
 }
 
-bool SensorData::hasChanged() const {
-  return (roomOccupied != prevRoomOccupied) ||
-         (indoorTemp != prevIndoorTemp) ||
-         (outdoorTemp != prevOutdoorTemp) ||
-         (indoorHumidity != prevIndoorHumidity) ||
-         (outdoorHumidity != prevOutdoorHumidity) ||
-         (sunlightIntense != prevSunlightIntense) ||
-         (isHotInside != prevIsHotInside);
-}
-
-void SensorData::printReadings(bool forcePrint) {
-  bool sensorChanged = hasChanged();
-  
-  if (sensorChanged || forcePrint) {
-    Serial.println(F("\n--- Sensor Readings ---"));
-    Serial.print(F("Room Occupied: ")); Serial.println(roomOccupied ? F("Yes") : F("No"));
-    Serial.print(F("Indoor Temp: ")); Serial.print(indoorTemp); Serial.println(F("°C"));
-    Serial.print(F("Outdoor Temp: ")); Serial.print(outdoorTemp); Serial.println(F("°C"));
-    Serial.print(F("Indoor Humidity: ")); Serial.print(indoorHumidity); Serial.println(F("%"));
-    Serial.print(F("Outdoor Humidity: ")); Serial.print(outdoorHumidity); Serial.println(F("%"));
-    Serial.print(F("Sunlight Intense: ")); Serial.println(sunlightIntense ? F("Yes") : F("No"));
-    Serial.print(F("Hot Inside: ")); Serial.println(isHotInside ? F("Yes (Summer)") : F("No (Winter)"));
-    
-    // Update previous values
-    prevRoomOccupied = roomOccupied;
-    prevIndoorTemp = indoorTemp;
-    prevOutdoorTemp = outdoorTemp;
-    prevIndoorHumidity = indoorHumidity;
-    prevOutdoorHumidity = outdoorHumidity;
-    prevSunlightIntense = sunlightIntense;
-    prevIsHotInside = isHotInside;
-  }
-}
-
 } // namespace Sensor
 } // namespace ShadeWave
-

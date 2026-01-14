@@ -17,15 +17,6 @@ private:
   bool sunlightIntense;
   bool isHotInside;  // Derived value
   
-  // Previous values for change detection
-  bool prevRoomOccupied;
-  float prevIndoorTemp;
-  float prevOutdoorTemp;
-  float prevIndoorHumidity;
-  float prevOutdoorHumidity;
-  bool prevSunlightIntense;
-  bool prevIsHotInside;
-  
   // Thresholds
   float desiredTempThreshold;
 
@@ -53,16 +44,9 @@ public:
   
   // Derived value calculation
   void updateDerivedValues();
-  
-  // Change detection
-  bool hasChanged() const;
-  
-  // Serial output
-  void printReadings(bool forcePrint = false);
 };
 
 } // namespace Sensor
 } // namespace ShadeWave
 
 #endif // SENSOR_DATA_H
-

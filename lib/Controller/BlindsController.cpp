@@ -5,11 +5,8 @@
 namespace ShadeWave {
 namespace Controller {
 
-const float BlindsController::HOT_TEMP_THRESHOLD = ShadeWave::Config::HOT_TEMP_THRESHOLD;
-
 BlindsController::BlindsController(int openPin, int closedPin, int neutralPin, int servoPin)
   : blindsState(BlindsState::NEUTRAL),
-    prevBlindsState(BlindsState::NEUTRAL),
     openPin(openPin),
     closedPin(closedPin),
     neutralPin(neutralPin),
@@ -78,35 +75,6 @@ void BlindsController::update(const Sensor::SensorData& sensors) {
   }
 }
 
-void BlindsController::printStatus(const Sensor::SensorData& sensors, bool forcePrint) {
-  bool stateChanged = hasChanged();
-  
-  if (stateChanged || forcePrint) {
-    Serial.println(F("\n--- Blinds Control Logic ---"));
-    
-    if (!sensors.getRoomOccupied()) {
-      Serial.println(F("Room not occupied -> Energy Saving Mode"));
-      Serial.println(F("Action: Close Blinds"));
-    } else {
-      if (sensors.getSunlightIntense()) {
-        Serial.println(F("Sunlight is intense"));
-        if (sensors.getIsHotInside()) {
-          Serial.println(F("Hot inside (Summer Mode)"));
-          Serial.println(F("Action: Close Blinds - Block Heat"));
-        } else {
-          Serial.println(F("Not hot inside (Winter Mode)"));
-          Serial.println(F("Action: Open Blinds - Solar Heating"));
-        }
-      } else {
-        Serial.println(F("Sunlight is not intense"));
-        Serial.println(F("Action: Keep Blinds Neutral"));
-      }
-    }
-    
-    prevBlindsState = blindsState;
-  }
-}
-
 void BlindsController::testServo() {
   // Sweep servo through all three positions for testing
   servoMotor.write(ShadeWave::Config::BLINDS_SERVO_CLOSED_ANGLE);
@@ -121,4 +89,3 @@ void BlindsController::testServo() {
 
 } // namespace Controller
 } // namespace ShadeWave
-
