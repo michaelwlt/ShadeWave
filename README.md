@@ -30,6 +30,7 @@ set indoorHumidity <value>
 set outdoorHumidity <value>
 set sunlightIntense true|false|1|0
 set desiredTempThreshold <value>
+set humidityThreshold <value>
 ```
 
 ### Query Commands

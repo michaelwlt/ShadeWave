@@ -19,6 +19,7 @@ private:
   
   // Thresholds
   float desiredTempThreshold;
+  float humidityThreshold;
 
 public:
   SensorData();
@@ -32,6 +33,7 @@ public:
   bool getSunlightIntense() const { return sunlightIntense; }
   bool getIsHotInside() const { return isHotInside; }
   float getDesiredTempThreshold() const { return desiredTempThreshold; }
+  float getHumidityThreshold() const { return humidityThreshold; }
   
   // Setters
   void setRoomOccupied(bool value);
@@ -41,6 +43,7 @@ public:
   void setOutdoorHumidity(float value);
   void setSunlightIntense(bool value);
   void setDesiredTempThreshold(float value);
+  void setHumidityThreshold(float value);
   
   // Derived value calculation
   void updateDerivedValues();

@@ -168,9 +168,20 @@ void SerialCommandProcessor::process() {
             Serial.println(F("ERROR: Invalid temperature threshold value"));
           }
         }
+        else if (strEquals(varName, "humiditythreshold")) {
+          float val = atof(valueStr);
+          if (val != 0.0 || strEquals(valueStr, "0") || strEquals(valueStr, "0.0")) {
+            sensors.setHumidityThreshold(val);
+            Serial.print(F("OK: humidityThreshold set to "));
+            Serial.print(sensors.getHumidityThreshold());
+            Serial.println(F("%"));
+          } else {
+            Serial.println(F("ERROR: Invalid humidity threshold value"));
+          }
+        }
         else {
           Serial.println(F("ERROR: Unknown variable name"));
-          Serial.println(F("Available: roomOccupied, indoorTemp, outdoorTemp, indoorHumidity, outdoorHumidity, sunlightIntense, desiredTempThreshold"));
+          Serial.println(F("Available: roomOccupied, indoorTemp, outdoorTemp, indoorHumidity, outdoorHumidity, sunlightIntense, desiredTempThreshold, humidityThreshold"));
         }
       } else {
         Serial.println(F("ERROR: Invalid command format. Use: set <variable> <value>"));
@@ -187,6 +198,7 @@ void SerialCommandProcessor::process() {
       Serial.print(F("sunlightIntense: ")); Serial.println(sensors.getSunlightIntense() ? F("true") : F("false"));
       Serial.print(F("isHotInside: ")); Serial.println(sensors.getIsHotInside() ? F("true") : F("false"));
       Serial.print(F("desiredTempThreshold: ")); Serial.print(sensors.getDesiredTempThreshold()); Serial.println(F("°C"));
+      Serial.print(F("humidityThreshold: ")); Serial.print(sensors.getHumidityThreshold()); Serial.println(F("%"));
     }
     // Parse "help" command
     else if (strEquals(command, "help")) {
@@ -209,6 +221,7 @@ void SerialCommandProcessor::printHelp() {
   Serial.println(F("    outdoorHumidity       - float (e.g., 70.0)"));
   Serial.println(F("    sunlightIntense       - true/false"));
   Serial.println(F("    desiredTempThreshold  - float (e.g., 24.0)"));
+  Serial.println(F("    humidityThreshold     - float (e.g., 75.0)"));
   Serial.println(F("status                   - Show all sensor values"));
   Serial.println(F("help                     - Show this help"));
   Serial.println(F("=========================="));

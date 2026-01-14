@@ -44,7 +44,7 @@ void VentController::update(const Sensor::SensorData& sensors) {
   // Room is occupied - compare temperatures
   if (sensors.getOutdoorTemp() < sensors.getIndoorTemp()) {
     // Cooler outside
-    if (sensors.getOutdoorHumidity() > Config::HIGH_HUMIDITY_THRESHOLD) {
+    if (sensors.getOutdoorHumidity() > sensors.getHumidityThreshold()) {
       // High humidity outside
       ventOpen = false;
       updateVentOutputs(false);
