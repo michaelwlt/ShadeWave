@@ -1,6 +1,8 @@
 # ShadeWave Ctrl Software written for the Arduino Ono
 
 
+Make sure to install https://marketplace.cursorapi.com/items/?itemName=pioarduino.pioarduino-ide for 
+
 ## System Configuration
 
 - **Baud Rate**: 9600
@@ -16,8 +18,14 @@
 - **Pin 4**: BLINDS_OPEN_LED
 - **Pin 5**: BLINDS_CLOSED_LED
 - **Pin 6**: BLINDS_NEUTRAL_LED
+
+## Motor Pin Assigments 
 - **Pin 9**: VENTS_SERVO_PIN
 - **Pin 10**: BLINDS_SERVO_PIN
+
+## Sensor Pin Assignments
+### Outdoor Sensor
+![SHT20 Temperature and Humidity Sensor Arduino Circuit](https://www.circuits-diy.com/wp-content/uploads/2022/12/SHT20-Temperature-and-Humidity-Sensor-Arduino-Circuit.png)
 
 ## Serial Commands
 
