@@ -68,19 +68,7 @@ void setup() {
   Serial.println(F("LED and Servo test complete. Starting system in 3 seconds..."));
   delay(3000);
   Serial.println(F("System initialized. Starting control loop..."));
-  Serial.println(F("\n=== Serial Command Interface ==="));
-  Serial.println(F("Commands:"));
-  Serial.println(F("  set <variable> <value>  - Set sensor value"));
-  Serial.println(F("  status                 - Show all sensor values"));
-  Serial.println(F("  help                   - Show this help"));
-  Serial.println(F("Examples:"));
-  Serial.println(F("  set roomOccupied true"));
-  Serial.println(F("  set indoorTemp 26.5"));
-  Serial.println(F("  set outdoorTemp 22.0"));
-  Serial.println(F("  set indoorHumidity 60.0"));
-  Serial.println(F("  set outdoorHumidity 80.0"));
-  Serial.println(F("  set sunlightIntense false"));
-  Serial.println(F("================================"));
+  cmdProcessor.printHelp();
   delay(1000);
 }
 

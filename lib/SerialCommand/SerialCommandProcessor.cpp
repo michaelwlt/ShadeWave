@@ -200,17 +200,17 @@ void SerialCommandProcessor::process() {
 
 void SerialCommandProcessor::printHelp() {
   Serial.println(F("\n=== Available Commands ==="));
-  Serial.println(F("set <variable> <value>  - Set sensor value"));
+  Serial.println(F("set <variable> <value>    - Set sensor value"));
   Serial.println(F("  Variables:"));
-  Serial.println(F("    roomOccupied        - true/false"));
-  Serial.println(F("    indoorTemp         - float (e.g., 25.5)"));
-  Serial.println(F("    outdoorTemp        - float (e.g., 20.0)"));
-  Serial.println(F("    indoorHumidity     - float (e.g., 50.0)"));
-  Serial.println(F("    outdoorHumidity    - float (e.g., 70.0)"));
-  Serial.println(F("    sunlightIntense    - true/false"));
-  Serial.println(F("    desiredTempThreshold - float (e.g., 24.0)"));
-  Serial.println(F("status                  - Show all sensor values"));
-  Serial.println(F("help                   - Show this help"));
+  Serial.println(F("    roomOccupied          - true/false"));
+  Serial.println(F("    indoorTemp            - float (e.g., 25.5)"));
+  Serial.println(F("    outdoorTemp           - float (e.g., 20.0)"));
+  Serial.println(F("    indoorHumidity        - float (e.g., 50.0)"));
+  Serial.println(F("    outdoorHumidity       - float (e.g., 70.0)"));
+  Serial.println(F("    sunlightIntense       - true/false"));
+  Serial.println(F("    desiredTempThreshold  - float (e.g., 24.0)"));
+  Serial.println(F("status                   - Show all sensor values"));
+  Serial.println(F("help                     - Show this help"));
   Serial.println(F("=========================="));
 }
 
