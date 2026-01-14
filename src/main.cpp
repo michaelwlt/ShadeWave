@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <Config.h>
 #include <SensorData.h>
+#include <OutdoorSensor.h>
 #include <VentController.h>
 #include <BlindsController.h>
 #include <SerialCommandProcessor.h>
@@ -10,6 +11,7 @@ using namespace ShadeWave;
 
 // Global instances (required by Arduino framework)
 Sensor::SensorData sensors;
+Sensor::OutdoorSensor outdoorSensor;
 Controller::VentController vent(Config::VENT_OPEN_LED, Config::VENT_CLOSED_LED, Config::VENT_SERVO_PIN);
 Controller::BlindsController blinds(Config::BLINDS_OPEN_LED, Config::BLINDS_CLOSED_LED, Config::BLINDS_NEUTRAL_LED, Config::BLINDS_SERVO_PIN);
 SerialCommand::SerialCommandProcessor cmdProcessor(sensors);
@@ -23,6 +25,13 @@ void setup() {
   // Initialize controllers (sets up LED pins)
   vent.initialize();
   blinds.initialize();
+  
+  // Initialize outdoor sensor (SHT20)
+  if (outdoorSensor.begin()) {
+    Serial.println(F("SHT20 outdoor sensor initialized"));
+  } else {
+    Serial.println(F("SHT20 sensor not found!"));
+  }
   
   // Test all LEDs to verify they work
   Serial.println(F("Testing all LEDs..."));
@@ -96,6 +105,12 @@ void loop() {
   lastMainLoopTime = currentTime;
   
   // Main control loop
+  
+  // Read outdoor sensor and update sensor data
+  if (outdoorSensor.read()) {
+    sensors.setOutdoorTemp(outdoorSensor.getTemperature());
+    sensors.setOutdoorHumidity(outdoorSensor.getHumidity());
+  }
   
   // Update controllers based on current sensor state
   vent.update(sensors);
