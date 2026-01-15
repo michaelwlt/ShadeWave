@@ -2,6 +2,7 @@
 #include <Config.h>
 #include <SensorData.h>
 #include <OutdoorSensor.h>
+#include <IndoorSensor.h>
 #include <VentController.h>
 #include <BlindsController.h>
 #include <SerialCommandProcessor.h>
@@ -12,6 +13,7 @@ using namespace ShadeWave;
 // Global instances (required by Arduino framework)
 Sensor::SensorData sensors;
 Sensor::OutdoorSensor outdoorSensor(Config::DHT_SENSOR_PIN);
+Sensor::IndoorSensor indoorSensor(Config::DS18B20_SENSOR_PIN);
 Controller::VentController vent(Config::VENT_OPEN_LED, Config::VENT_CLOSED_LED, Config::VENT_SERVO_PIN);
 Controller::BlindsController blinds(Config::BLINDS_OPEN_LED, Config::BLINDS_CLOSED_LED, Config::BLINDS_NEUTRAL_LED, Config::BLINDS_SERVO_PIN);
 SerialCommand::SerialCommandProcessor cmdProcessor(sensors);
@@ -31,6 +33,13 @@ void setup() {
     Serial.println(F("DHT22 outdoor sensor initialized"));
   } else {
     Serial.println(F("DHT22 sensor not found!"));
+  }
+  
+  // Initialize indoor sensor (DS18B20)
+  if (indoorSensor.begin()) {
+    Serial.println(F("DS18B20 indoor sensor initialized"));
+  } else {
+    Serial.println(F("DS18B20 sensor not found!"));
   }
   
   // Test all LEDs to verify they work
@@ -110,6 +119,11 @@ void loop() {
   if (outdoorSensor.read()) {
     sensors.setOutdoorTemp(outdoorSensor.getTemperature());
     sensors.setOutdoorHumidity(outdoorSensor.getHumidity());
+  }
+  
+  // Read indoor sensor and update sensor data
+  if (indoorSensor.read()) {
+    sensors.setIndoorTemp(indoorSensor.getTemperature());
   }
   
   // Update controllers based on current sensor state

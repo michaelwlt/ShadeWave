@@ -23,7 +23,9 @@
     { "type": "wokwi-servo", "id": "servoVents", "top": 280, "left": 20, "attrs": {} },
     { "type": "wokwi-servo", "id": "servoBlinds", "top": 280, "left": 150, "attrs": {} },
 
-    { "type": "wokwi-dht22", "id": "dht22", "top": 280, "left": 320, "attrs": {} }
+    { "type": "wokwi-dht22", "id": "dht22", "top": 280, "left": 320, "attrs": {} },
+
+    { "type": "board-ds18b20", "id": "ds18b20", "top": 280, "left": 420, "attrs": {} }
   ],
   "connections": [
     [ "uno:2", "ledVentOpen:A", "green", [ "v0" ] ],
@@ -56,6 +58,10 @@
 
     [ "uno:7", "dht22:SDA", "green", [ "v0" ] ],
     [ "dht22:VCC", "uno:5V", "red", [ "v0" ] ],
-    [ "dht22:GND", "uno:GND.2", "black", [ "v0" ] ]
+    [ "dht22:GND", "uno:GND.2", "black", [ "v0" ] ],
+
+    [ "uno:8", "ds18b20:DQ", "green", [ "v0" ] ],
+    [ "ds18b20:VCC", "uno:5V", "red", [ "v0" ] ],
+    [ "ds18b20:GND", "uno:GND.2", "black", [ "v0" ] ]
   ]
 }

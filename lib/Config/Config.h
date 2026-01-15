@@ -14,8 +14,11 @@ const int BLINDS_OPEN_LED = 4;    // LED indicating blinds are open
 const int BLINDS_CLOSED_LED = 5;  // LED indicating blinds are closed
 const int BLINDS_NEUTRAL_LED = 6; // LED indicating blinds are neutral
 
-// DHT22 sensor pin
+// DHT22 sensor pin (outdoor)
 const int DHT_SENSOR_PIN = 7;     // Digital pin for DHT22 data
+
+// DS18B20 indoor temperature sensor pin
+const int DS18B20_SENSOR_PIN = 8; // Digital pin for DS18B20 data
 
 // Command buffer size
 const int CMD_BUFFER_SIZE = 64;
