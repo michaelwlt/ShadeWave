@@ -18,6 +18,9 @@ const int BLINDS_NEUTRAL_LED = 6; // LED indicating blinds are neutral
 const int DS18B20_SENSOR_PIN = 7; // Digital pin for DS18B20 data
 
 
+// PIR motion sensor pin
+const int PIR_SENSOR_PIN = 11;    // Digital pin for PIR motion sensor
+
 // Command buffer size
 const int CMD_BUFFER_SIZE = 64;
 
