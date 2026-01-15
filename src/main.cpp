@@ -3,6 +3,7 @@
 #include <SensorData.h>
 #include <OutdoorSensor.h>
 #include <IndoorSensor.h>
+#include <MotionSensor.h>
 #include <VentController.h>
 #include <BlindsController.h>
 #include <SerialCommandProcessor.h>
@@ -14,6 +15,7 @@ using namespace ShadeWave;
 Sensor::SensorData sensors;
 Sensor::OutdoorSensor outdoorSensor(Config::DHT_SENSOR_PIN);
 Sensor::IndoorSensor indoorSensor(Config::DS18B20_SENSOR_PIN);
+Sensor::MotionSensor motionSensor(Config::PIR_SENSOR_PIN);
 Controller::VentController vent(Config::VENT_OPEN_LED, Config::VENT_CLOSED_LED, Config::VENT_SERVO_PIN);
 Controller::BlindsController blinds(Config::BLINDS_OPEN_LED, Config::BLINDS_CLOSED_LED, Config::BLINDS_NEUTRAL_LED, Config::BLINDS_SERVO_PIN);
 SerialCommand::SerialCommandProcessor cmdProcessor(sensors);
@@ -40,6 +42,13 @@ void setup() {
     Serial.println(F("DS18B20 indoor sensor initialized"));
   } else {
     Serial.println(F("DS18B20 sensor not found!"));
+  }
+  
+  // Initialize motion sensor (PIR)
+  if (motionSensor.begin()) {
+    Serial.println(F("PIR motion sensor initialized"));
+  } else {
+    Serial.println(F("PIR motion sensor not found!"));
   }
   
   // Test all LEDs to verify they work
@@ -124,6 +133,11 @@ void loop() {
   // Read indoor sensor and update sensor data
   if (indoorSensor.read()) {
     sensors.setIndoorTemp(indoorSensor.getTemperature());
+  }
+  
+  // Read motion sensor and update sensor data
+  if (motionSensor.read()) {
+    sensors.setRoomOccupied(motionSensor.isMotionDetected());
   }
   
   // Update controllers based on current sensor state
