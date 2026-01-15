@@ -1,4 +1,5 @@
 #include "MotionSensor.h"
+#include <Config.h>
 
 namespace ShadeWave {
 namespace Sensor {
@@ -6,25 +7,22 @@ namespace Sensor {
 MotionSensor::MotionSensor(uint8_t pin)
   : pin(pin),
     motionDetected(false),
-    ready(false) {
+    initTime(0) {
 }
 
 bool MotionSensor::begin() {
   // Configure pin as input for reading PIR sensor output
   pinMode(pin, INPUT);
   
+  // Record initialization time for warm-up period tracking
   // PIR sensors typically need 10-60 seconds to stabilize after power-on
-  // For simulation purposes, we'll consider it ready immediately
-  ready = true;
-  
-  // Do an initial read
-  motionDetected = digitalRead(pin) == HIGH;
+  initTime = millis();
   
   return true;
 }
 
 bool MotionSensor::read() {
-  if (!ready) {
+  if (!isReady()) {
     return false;
   }
   
@@ -32,6 +30,11 @@ bool MotionSensor::read() {
   motionDetected = digitalRead(pin) == HIGH;
   
   return true;
+}
+
+bool MotionSensor::isReady() const {
+  // Sensor is ready once the warm-up period has elapsed
+  return (millis() - initTime) >= Config::PIR_WARMUP_MS;
 }
 
 } // namespace Sensor

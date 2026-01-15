@@ -10,7 +10,7 @@ class MotionSensor {
 private:
   uint8_t pin;
   bool motionDetected;
-  bool ready;
+  unsigned long initTime;  // Timestamp when begin() was called
 
 public:
   MotionSensor(uint8_t pin);
@@ -25,8 +25,8 @@ public:
   // Getter for last reading
   bool isMotionDetected() const { return motionDetected; }
   
-  // Check if sensor is ready
-  bool isReady() const { return ready; }
+  // Check if sensor is ready (warm-up period has elapsed)
+  bool isReady() const;
 };
 
 } // namespace Sensor

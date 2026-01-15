@@ -39,6 +39,10 @@ const int BLINDS_SERVO_CLOSED_ANGLE = 0;     // degrees when blinds are closed
 const float HIGH_HUMIDITY_THRESHOLD = 75.0;  // Humidity percentage considered "high"
 const float HOT_TEMP_THRESHOLD = 24.0;       // Temperature considered "hot" for summer mode
 
+// Timing configuration
+const unsigned long MAIN_LOOP_INTERVAL_MS = 5000;  // Main loop runs every 5 seconds
+const unsigned long PIR_WARMUP_MS = 30000;         // PIR sensor warm-up time (30 seconds)
+
 } // namespace Config
 } // namespace ShadeWave
 
