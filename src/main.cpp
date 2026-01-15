@@ -108,13 +108,12 @@ void loop() {
   // Process serial commands continuously (non-blocking)
   cmdProcessor.process();
   
-  // Non-blocking timing: only run main control loop every 5 seconds
+  // Non-blocking timing: only run main control loop at configured interval
   static unsigned long lastMainLoopTime = 0;
-  const unsigned long MAIN_LOOP_INTERVAL = 5000; // 5 seconds
   
   // Check if enough time has passed since last main loop execution
   unsigned long currentTime = millis();
-  if (currentTime - lastMainLoopTime < MAIN_LOOP_INTERVAL) {
+  if (currentTime - lastMainLoopTime < Config::MAIN_LOOP_INTERVAL_MS) {
     // Not enough time has passed, just process commands and return
     return;
   }
