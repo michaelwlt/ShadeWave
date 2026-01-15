@@ -9,41 +9,18 @@ namespace State {
 
 StateReporter::StateReporter() : needsReport(true) {
   // Initialize snapshot with default values
-  lastReported.roomOccupied = false;
-  lastReported.indoorTemp = 0.0f;
-  lastReported.outdoorTemp = 0.0f;
-  lastReported.indoorHumidity = 0.0f;
-  lastReported.outdoorHumidity = 0.0f;
-  lastReported.sunlightIntense = false;
-  lastReported.isHotInside = false;
   lastReported.ventOpen = false;
   lastReported.blindsState = Controller::BlindsState::NEUTRAL;
 }
 
-bool StateReporter::hasChanged(const Sensor::SensorData& sensors,
-                               const Controller::VentController& vent,
+bool StateReporter::hasChanged(const Controller::VentController& vent,
                                const Controller::BlindsController& blinds) const {
-  return (sensors.getRoomOccupied() != lastReported.roomOccupied) ||
-         (sensors.getIndoorTemp() != lastReported.indoorTemp) ||
-         (sensors.getOutdoorTemp() != lastReported.outdoorTemp) ||
-         (sensors.getIndoorHumidity() != lastReported.indoorHumidity) ||
-         (sensors.getOutdoorHumidity() != lastReported.outdoorHumidity) ||
-         (sensors.getSunlightIntense() != lastReported.sunlightIntense) ||
-         (sensors.getIsHotInside() != lastReported.isHotInside) ||
-         (vent.isOpen() != lastReported.ventOpen) ||
+  return (vent.isOpen() != lastReported.ventOpen) ||
          (blinds.getState() != lastReported.blindsState);
 }
 
-void StateReporter::captureSnapshot(const Sensor::SensorData& sensors,
-                                    const Controller::VentController& vent,
+void StateReporter::captureSnapshot(const Controller::VentController& vent,
                                     const Controller::BlindsController& blinds) {
-  lastReported.roomOccupied = sensors.getRoomOccupied();
-  lastReported.indoorTemp = sensors.getIndoorTemp();
-  lastReported.outdoorTemp = sensors.getOutdoorTemp();
-  lastReported.indoorHumidity = sensors.getIndoorHumidity();
-  lastReported.outdoorHumidity = sensors.getOutdoorHumidity();
-  lastReported.sunlightIntense = sensors.getSunlightIntense();
-  lastReported.isHotInside = sensors.getIsHotInside();
   lastReported.ventOpen = vent.isOpen();
   lastReported.blindsState = blinds.getState();
 }
@@ -51,12 +28,12 @@ void StateReporter::captureSnapshot(const Sensor::SensorData& sensors,
 void StateReporter::reportIfChanged(const Sensor::SensorData& sensors,
                                     const Controller::VentController& vent,
                                     const Controller::BlindsController& blinds) {
-  if (needsReport || hasChanged(sensors, vent, blinds)) {
+  if (needsReport || hasChanged(vent, blinds)) {
     printVentLogic(sensors, vent);
     printBlindsLogic(sensors, blinds);
     printSystemSummary(vent, blinds);
     
-    captureSnapshot(sensors, vent, blinds);
+    captureSnapshot(vent, blinds);
     needsReport = false;
   }
 }

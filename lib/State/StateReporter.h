@@ -18,13 +18,6 @@ namespace State {
 class StateReporter {
 private:
   struct Snapshot {
-    bool roomOccupied;
-    float indoorTemp;
-    float outdoorTemp;
-    float indoorHumidity;
-    float outdoorHumidity;
-    bool sunlightIntense;
-    bool isHotInside;
     bool ventOpen;
     Controller::BlindsState blindsState;
   };
@@ -32,12 +25,10 @@ private:
   Snapshot lastReported;
   bool needsReport;
   
-  bool hasChanged(const Sensor::SensorData& sensors,
-                  const Controller::VentController& vent,
+  bool hasChanged(const Controller::VentController& vent,
                   const Controller::BlindsController& blinds) const;
   
-  void captureSnapshot(const Sensor::SensorData& sensors,
-                       const Controller::VentController& vent,
+  void captureSnapshot(const Controller::VentController& vent,
                        const Controller::BlindsController& blinds);
   
   void printVentLogic(const Sensor::SensorData& sensors, const Controller::VentController& vent);
