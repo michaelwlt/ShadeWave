@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "author": "ShadeWave",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-uno", "id": "uno", "top": 170, "left": 120, "attrs": {} },
+
+    { "type": "wokwi-led", "id": "ledVentOpen", "top": 30, "left": 20, "attrs": { "color": "green" } },
+    { "type": "wokwi-resistor", "id": "rVentOpen", "top": 70, "left": 30, "attrs": { "value": "220" } },
+
+    { "type": "wokwi-led", "id": "ledVentClosed", "top": 30, "left": 90, "attrs": { "color": "red" } },
+    { "type": "wokwi-resistor", "id": "rVentClosed", "top": 70, "left": 100, "attrs": { "value": "220" } },
+
+    { "type": "wokwi-led", "id": "ledBlindsOpen", "top": 30, "left": 160, "attrs": { "color": "green" } },
+    { "type": "wokwi-resistor", "id": "rBlindsOpen", "top": 70, "left": 170, "attrs": { "value": "220" } },
+
+    { "type": "wokwi-led", "id": "ledBlindsClosed", "top": 30, "left": 230, "attrs": { "color": "red" } },
+    { "type": "wokwi-resistor", "id": "rBlindsClosed", "top": 70, "left": 240, "attrs": { "value": "220" } },
+
+    { "type": "wokwi-led", "id": "ledBlindsNeutral", "top": 30, "left": 300, "attrs": { "color": "yellow" } },
+    { "type": "wokwi-resistor", "id": "rBlindsNeutral", "top": 70, "left": 310, "attrs": { "value": "220" } },
+
+    { "type": "wokwi-servo", "id": "servoVents", "top": 280, "left": 20, "attrs": {} },
+    { "type": "wokwi-servo", "id": "servoBlinds", "top": 280, "left": 150, "attrs": {} },
+
+    { "type": "wokwi-dht22", "id": "dht22", "top": 280, "left": 320, "attrs": {} }
+  ],
+  "connections": [
+    [ "uno:2", "ledVentOpen:A", "green", [ "v0" ] ],
+    [ "ledVentOpen:C", "rVentOpen:2", "green", [ "v0" ] ],
+    [ "rVentOpen:1", "uno:GND.1", "black", [ "v0" ] ],
+
+    [ "uno:3", "ledVentClosed:A", "green", [ "v0" ] ],
+    [ "ledVentClosed:C", "rVentClosed:2", "green", [ "v0" ] ],
+    [ "rVentClosed:1", "uno:GND.1", "black", [ "v0" ] ],
+
+    [ "uno:4", "ledBlindsOpen:A", "green", [ "v0" ] ],
+    [ "ledBlindsOpen:C", "rBlindsOpen:2", "green", [ "v0" ] ],
+    [ "rBlindsOpen:1", "uno:GND.1", "black", [ "v0" ] ],
+
+    [ "uno:5", "ledBlindsClosed:A", "green", [ "v0" ] ],
+    [ "ledBlindsClosed:C", "rBlindsClosed:2", "green", [ "v0" ] ],
+    [ "rBlindsClosed:1", "uno:GND.1", "black", [ "v0" ] ],
+
+    [ "uno:6", "ledBlindsNeutral:A", "green", [ "v0" ] ],
+    [ "ledBlindsNeutral:C", "rBlindsNeutral:2", "green", [ "v0" ] ],
+    [ "rBlindsNeutral:1", "uno:GND.1", "black", [ "v0" ] ],
+
+    [ "uno:9", "servoVents:PWM", "green", [ "v0" ] ],
+    [ "servoVents:V+", "uno:5V", "red", [ "v0" ] ],
+    [ "servoVents:GND", "uno:GND.2", "black", [ "v0" ] ],
+
+    [ "uno:10", "servoBlinds:PWM", "green", [ "v0" ] ],
+    [ "servoBlinds:V+", "uno:5V", "red", [ "v0" ] ],
+    [ "servoBlinds:GND", "uno:GND.2", "black", [ "v0" ] ],
+
+    [ "uno:7", "dht22:SDA", "green", [ "v0" ] ],
+    [ "dht22:VCC", "uno:5V", "red", [ "v0" ] ],
+    [ "dht22:GND", "uno:GND.2", "black", [ "v0" ] ]
+  ]
+}

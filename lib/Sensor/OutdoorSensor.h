@@ -2,22 +2,22 @@
 #define OUTDOOR_SENSOR_H
 
 #include <Arduino.h>
-#include <DFRobot_SHT20.h>
+#include <DHT.h>
 
 namespace ShadeWave {
 namespace Sensor {
 
 class OutdoorSensor {
 private:
-  DFRobot_SHT20 sht20;
+  DHT dht;
   float temperature;
   float humidity;
   bool ready;
 
 public:
-  OutdoorSensor();
+  OutdoorSensor(uint8_t pin);
   
-  // Initialize the SHT20 sensor
+  // Initialize the DHT22 sensor
   bool begin();
   
   // Read temperature and humidity from sensor

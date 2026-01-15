@@ -11,7 +11,7 @@ using namespace ShadeWave;
 
 // Global instances (required by Arduino framework)
 Sensor::SensorData sensors;
-Sensor::OutdoorSensor outdoorSensor;
+Sensor::OutdoorSensor outdoorSensor(Config::DHT_SENSOR_PIN);
 Controller::VentController vent(Config::VENT_OPEN_LED, Config::VENT_CLOSED_LED, Config::VENT_SERVO_PIN);
 Controller::BlindsController blinds(Config::BLINDS_OPEN_LED, Config::BLINDS_CLOSED_LED, Config::BLINDS_NEUTRAL_LED, Config::BLINDS_SERVO_PIN);
 SerialCommand::SerialCommandProcessor cmdProcessor(sensors);
@@ -26,11 +26,11 @@ void setup() {
   vent.initialize();
   blinds.initialize();
   
-  // Initialize outdoor sensor (SHT20)
+  // Initialize outdoor sensor (DHT22)
   if (outdoorSensor.begin()) {
-    Serial.println(F("SHT20 outdoor sensor initialized"));
+    Serial.println(F("DHT22 outdoor sensor initialized"));
   } else {
-    Serial.println(F("SHT20 sensor not found!"));
+    Serial.println(F("DHT22 sensor not found!"));
   }
   
   // Test all LEDs to verify they work

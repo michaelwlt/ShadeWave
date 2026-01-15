@@ -3,24 +3,26 @@
 namespace ShadeWave {
 namespace Sensor {
 
-OutdoorSensor::OutdoorSensor()
-  : temperature(0.0),
+OutdoorSensor::OutdoorSensor(uint8_t pin)
+  : dht(pin, DHT22),
+    temperature(0.0),
     humidity(0.0),
     ready(false) {
 }
 
 bool OutdoorSensor::begin() {
-  sht20.initSHT20();
-  delay(100);  // Give sensor time to initialize
+  dht.begin();
+  delay(2000);  // DHT22 needs 2 seconds to stabilize after power-on
   
   // Try a test read to verify sensor is connected
-  float testTemp = sht20.readTemperature();
+  float testTemp = dht.readTemperature();
+  float testHumidity = dht.readHumidity();
   
-  // Check if we got a valid reading (SHT20 returns very large negative values on error)
-  if (testTemp > -40.0 && testTemp < 125.0) {
+  // Check if we got valid readings (DHT returns NaN on error)
+  if (!isnan(testTemp) && !isnan(testHumidity)) {
     ready = true;
     temperature = testTemp;
-    humidity = sht20.readHumidity();
+    humidity = testHumidity;
     return true;
   }
   
@@ -33,12 +35,11 @@ bool OutdoorSensor::read() {
     return false;
   }
   
-  float newTemp = sht20.readTemperature();
-  float newHumidity = sht20.readHumidity();
+  float newTemp = dht.readTemperature();
+  float newHumidity = dht.readHumidity();
   
-  // Validate readings are within sensor's operating range
-  if (newTemp >= -40.0 && newTemp <= 125.0 &&
-      newHumidity >= 0.0 && newHumidity <= 100.0) {
+  // Validate readings (DHT returns NaN on error)
+  if (!isnan(newTemp) && !isnan(newHumidity)) {
     temperature = newTemp;
     humidity = newHumidity;
     return true;
