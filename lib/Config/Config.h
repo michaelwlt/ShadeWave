@@ -21,6 +21,9 @@ const int DS18B20_SENSOR_PIN = 7; // Digital pin for DS18B20 data
 // PIR motion sensor pin
 const int PIR_SENSOR_PIN = 11;    // Digital pin for PIR motion sensor
 
+// LDR light sensor pin (analog)
+const int LDR_SENSOR_PIN = A0;    // Analog pin for LDR photo-resistor
+
 // Command buffer size
 const int CMD_BUFFER_SIZE = 64;
 
@@ -38,6 +41,7 @@ const int BLINDS_SERVO_CLOSED_ANGLE = 0;     // degrees when blinds are closed
 // Thresholds
 const float HIGH_HUMIDITY_THRESHOLD = 75.0;  // Humidity percentage considered "high"
 const float HOT_TEMP_THRESHOLD = 24.0;       // Temperature considered "hot" for summer mode
+const int LDR_INTENSE_THRESHOLD = 300;       // Analog reading at or below this = intense sunlight (LDR: lower = brighter)
 
 // Timing configuration
 const unsigned long MAIN_LOOP_INTERVAL_MS = 5000;  // Main loop runs every 5 seconds

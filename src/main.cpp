@@ -4,6 +4,7 @@
 #include <OutdoorSensor.h>
 #include <IndoorSensor.h>
 #include <MotionSensor.h>
+#include <LightSensor.h>
 #include <VentController.h>
 #include <BlindsController.h>
 #include <SerialCommandProcessor.h>
@@ -16,6 +17,7 @@ Sensor::SensorData sensors;
 Sensor::OutdoorSensor outdoorSensor;
 Sensor::IndoorSensor indoorSensor(Config::DS18B20_SENSOR_PIN);
 Sensor::MotionSensor motionSensor(Config::PIR_SENSOR_PIN);
+Sensor::LightSensor lightSensor(Config::LDR_SENSOR_PIN);
 Controller::VentController vent(Config::VENT_OPEN_LED, Config::VENT_CLOSED_LED, Config::VENT_SERVO_PIN);
 Controller::BlindsController blinds(Config::BLINDS_OPEN_LED, Config::BLINDS_CLOSED_LED, Config::BLINDS_NEUTRAL_LED, Config::BLINDS_SERVO_PIN);
 SerialCommand::SerialCommandProcessor cmdProcessor(sensors);
@@ -49,6 +51,13 @@ void setup() {
     Serial.println(F("PIR motion sensor initialized"));
   } else {
     Serial.println(F("PIR motion sensor not found!"));
+  }
+  
+  // Initialize light sensor (LDR)
+  if (lightSensor.begin()) {
+    Serial.println(F("LDR light sensor initialized"));
+  } else {
+    Serial.println(F("LDR light sensor not found!"));
   }
   
   // Test all LEDs to verify they work
@@ -137,6 +146,11 @@ void loop() {
   // Read motion sensor and update sensor data
   if (motionSensor.read()) {
     sensors.setRoomOccupied(motionSensor.isMotionDetected());
+  }
+  
+  // Read light sensor and update sensor data
+  if (lightSensor.read()) {
+    sensors.setSunlightIntense(lightSensor.isLightIntense());
   }
   
   // Update controllers based on current sensor state
