@@ -27,7 +27,9 @@
 
     { "type": "board-ds18b20", "id": "ds18b20", "top": 280, "left": 420, "attrs": {} },
 
-    { "type": "wokwi-pir-motion-sensor", "id": "pir", "top": 280, "left": 520, "attrs": {} }
+    { "type": "wokwi-pir-motion-sensor", "id": "pir", "top": 280, "left": 520, "attrs": {} },
+
+    { "type": "wokwi-photoresistor-sensor", "id": "ldr", "top": 280, "left": 620, "attrs": {} }
   ],
   "connections": [
     [ "uno:2", "ledVentOpen:A", "green", [ "v0" ] ],
@@ -68,6 +70,10 @@
 
     [ "uno:11", "pir:OUT", "green", [ "v0" ] ],
     [ "pir:VCC", "uno:5V", "red", [ "v0" ] ],
-    [ "pir:GND", "uno:GND.2", "black", [ "v0" ] ]
+    [ "pir:GND", "uno:GND.2", "black", [ "v0" ] ],
+
+    [ "uno:A0", "ldr:AO", "green", [ "v0" ] ],
+    [ "ldr:VCC", "uno:5V", "red", [ "v0" ] ],
+    [ "ldr:GND", "uno:GND.2", "black", [ "v0" ] ]
   ]
 }
