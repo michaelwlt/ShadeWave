@@ -46,12 +46,8 @@ void setup() {
     Serial.println(F("DS18B20 sensor not found!"));
   }
   
-  // Initialize motion sensor (PIR)
-  if (motionSensor.begin()) {
-    Serial.println(F("PIR motion sensor initialized"));
-  } else {
-    Serial.println(F("PIR motion sensor not found!"));
-  }
+    // Initialize motion sensor (PIR) - blocks during 30s warm-up
+    motionSensor.begin();
   
   // Initialize light sensor (LDR)
   if (lightSensor.begin()) {

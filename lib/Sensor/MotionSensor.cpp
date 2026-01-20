@@ -18,6 +18,14 @@ bool MotionSensor::begin() {
   // PIR sensors typically need 10-60 seconds to stabilize after power-on
   initTime = millis();
   
+  // Block until warm-up period has elapsed
+  Serial.print(F("PIR sensor warming up"));
+  while (!isReady()) {
+    Serial.print(F("."));
+    delay(1000);  // Print a dot every second
+  }
+  Serial.println(F(" ready!"));
+  
   return true;
 }
 
