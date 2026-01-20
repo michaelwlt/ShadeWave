@@ -13,13 +13,7 @@ LightSensor::LightSensor(uint8_t pin)
 bool LightSensor::begin() {
   // Analog pins don't require explicit pinMode configuration on Arduino
   // They are automatically configured when analogRead() is called
-  
-  // Perform initial read to populate values
-  lastReading = analogRead(pin);
-  // LDR has inverse relationship: lower reading = more light
-  lightIntense = (lastReading <= Config::LDR_INTENSE_THRESHOLD);
-  
-  return true;
+  return read();
 }
 
 bool LightSensor::read() {
