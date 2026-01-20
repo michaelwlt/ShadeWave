@@ -54,11 +54,8 @@ void setup() {
   }
   
   // Initialize light sensor (LDR)
-  if (lightSensor.begin()) {
-    Serial.println(F("LDR light sensor initialized"));
-  } else {
-    Serial.println(F("LDR light sensor not found!"));
-  }
+  lightSensor.begin();
+  Serial.println(F("LDR light sensor initialized"));
   
   // Test all LEDs to verify they work
   Serial.println(F("Testing all LEDs..."));
