@@ -15,7 +15,7 @@ using namespace ShadeWave;
 // Global instances (required by Arduino framework)
 Sensor::SensorData sensors;
 Sensor::OutdoorSensor outdoorSensor;
-Sensor::IndoorSensor indoorSensor(Config::DS18B20_SENSOR_PIN);
+Sensor::IndoorSensor indoorSensor;
 Sensor::MotionSensor motionSensor(Config::PIR_SENSOR_PIN);
 Sensor::LightSensor lightSensor(Config::LDR_SENSOR_PIN);
 Controller::VentController vent(Config::VENT_OPEN_LED, Config::VENT_CLOSED_LED, Config::VENT_SERVO_PIN);
@@ -39,11 +39,11 @@ void setup() {
     Serial.println(F("SHT20 sensor not found!"));
   }
   
-  // Initialize indoor sensor (DS18B20)
+  // Initialize indoor sensor (SHT20 via Software I2C)
   if (indoorSensor.begin()) {
-    Serial.println(F("DS18B20 indoor sensor initialized"));
+    Serial.println(F("SHT20 indoor sensor initialized"));
   } else {
-    Serial.println(F("DS18B20 sensor not found!"));
+    Serial.println(F("SHT20 indoor sensor not found!"));
   }
   
     // Initialize motion sensor (PIR) - blocks during 30s warm-up
