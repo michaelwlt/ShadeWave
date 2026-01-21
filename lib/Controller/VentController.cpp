@@ -44,14 +44,14 @@ void VentController::update(const Sensor::SensorData& sensors) {
   // Room is occupied - check if cooling is needed and possible
   if (sensors.getIsHotInside() && sensors.getOutdoorTemp() < sensors.getIndoorTemp()) {
     // Hot inside and cooler outside - consider natural cooling
-    if (sensors.getOutdoorHumidity() > sensors.getHumidityThreshold()) {
-      // High humidity outside
-      ventOpen = false;
-      updateVentOutputs(false);
-    } else {
-      // Low humidity - natural cooling
+    if (sensors.getIndoorHumidity() > sensors.getOutdoorHumidity()) {
+      // Higher humidity inside - open vent to ventilate
       ventOpen = true;
       updateVentOutputs(true);
+    } else {
+      // Lower/equal humidity inside - keep closed
+      ventOpen = false;
+      updateVentOutputs(false);
     }
   } else {
     // Not hot inside OR warmer/equal outside - no cooling needed
