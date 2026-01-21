@@ -134,6 +134,7 @@ void loop() {
   // Read indoor sensor and update sensor data
   if (indoorSensor.read()) {
     sensors.setIndoorTemp(indoorSensor.getTemperature());
+    sensors.setIndoorHumidity(indoorSensor.getHumidity());
   }
   
   // Read motion sensor and update sensor data
