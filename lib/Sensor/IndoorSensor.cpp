@@ -12,6 +12,8 @@ IndoorSensor::IndoorSensor()
 }
 
 bool IndoorSensor::begin() {
+  Serial.println(F("[IndoorSensor] Initializing SHT20..."));
+  
   // Set up SoftWire buffers
   softWire.setTxBuffer(swTxBuffer, sizeof(swTxBuffer));
   softWire.setRxBuffer(swRxBuffer, sizeof(swRxBuffer));
@@ -23,7 +25,9 @@ bool IndoorSensor::begin() {
   // Send soft reset command
   softWire.beginTransmission(SHT20_ADDRESS);
   softWire.write(SHT20_SOFT_RESET);
-  softWire.endTransmission();
+  uint8_t resetResult = softWire.endTransmission();
+  Serial.print(F("[IndoorSensor] Soft reset result: "));
+  Serial.println(resetResult == 0 ? F("OK") : F("FAILED"));
   
   delay(15);  // Wait for reset to complete
   
@@ -31,19 +35,27 @@ bool IndoorSensor::begin() {
   uint16_t rawTemp;
   if (readSHT20Raw(SHT20_TEMP_NO_HOLD, rawTemp)) {
     temperature = rawToTemperature(rawTemp);
+    Serial.print(F("[IndoorSensor] Initial temp: "));
+    Serial.print(temperature);
+    Serial.println(F(" C"));
     
     // Verify valid reading range
     if (temperature > -40.0 && temperature < 125.0) {
       uint16_t rawHumidity;
       if (readSHT20Raw(SHT20_HUMIDITY_NO_HOLD, rawHumidity)) {
         humidity = rawToHumidity(rawHumidity);
+        Serial.print(F("[IndoorSensor] Initial humidity: "));
+        Serial.print(humidity);
+        Serial.println(F(" %"));
         ready = true;
+        Serial.println(F("[IndoorSensor] Initialization SUCCESS"));
         return true;
       }
     }
   }
   
   ready = false;
+  Serial.println(F("[IndoorSensor] Initialization FAILED"));
   return false;
 }
 
@@ -51,7 +63,10 @@ bool IndoorSensor::readSHT20Raw(uint8_t cmd, uint16_t& rawValue) {
   // Send measurement command
   softWire.beginTransmission(SHT20_ADDRESS);
   softWire.write(cmd);
-  if (softWire.endTransmission() != 0) {
+  uint8_t txResult = softWire.endTransmission();
+  if (txResult != 0) {
+    Serial.print(F("[IndoorSensor] I2C TX error: "));
+    Serial.println(txResult);
     return false;  // NACK or error
   }
   
@@ -62,6 +77,9 @@ bool IndoorSensor::readSHT20Raw(uint8_t cmd, uint16_t& rawValue) {
   // Request 3 bytes: MSB, LSB, Checksum
   uint8_t bytesReceived = softWire.requestFrom(SHT20_ADDRESS, (uint8_t)3);
   if (bytesReceived != 3) {
+    Serial.print(F("[IndoorSensor] I2C RX error, got "));
+    Serial.print(bytesReceived);
+    Serial.println(F(" bytes (expected 3)"));
     return false;
   }
   
@@ -72,6 +90,11 @@ bool IndoorSensor::readSHT20Raw(uint8_t cmd, uint16_t& rawValue) {
   
   // Combine bytes (lower 2 bits of LSB are status bits, mask them)
   rawValue = ((uint16_t)msb << 8) | (lsb & 0xFC);
+  
+  Serial.print(F("[IndoorSensor] Raw "));
+  Serial.print(cmd == SHT20_TEMP_NO_HOLD ? F("temp") : F("humidity"));
+  Serial.print(F(": 0x"));
+  Serial.println(rawValue, HEX);
   
   return true;
 }
@@ -94,16 +117,19 @@ float IndoorSensor::rawToHumidity(uint16_t raw) {
 
 bool IndoorSensor::read() {
   if (!ready) {
+    Serial.println(F("[IndoorSensor] read() called but sensor not ready"));
     return false;
   }
   
   uint16_t rawTemp, rawHumidity;
   
   if (!readSHT20Raw(SHT20_TEMP_NO_HOLD, rawTemp)) {
+    Serial.println(F("[IndoorSensor] Failed to read temperature"));
     return false;
   }
   
   if (!readSHT20Raw(SHT20_HUMIDITY_NO_HOLD, rawHumidity)) {
+    Serial.println(F("[IndoorSensor] Failed to read humidity"));
     return false;
   }
   
@@ -115,9 +141,15 @@ bool IndoorSensor::read() {
       newHumidity >= 0.0 && newHumidity <= 100.0) {
     temperature = newTemp;
     humidity = newHumidity;
+    Serial.print(F("[IndoorSensor] Temp: "));
+    Serial.print(temperature, 1);
+    Serial.print(F(" C, Humidity: "));
+    Serial.print(humidity, 1);
+    Serial.println(F(" %"));
     return true;
   }
   
+  Serial.println(F("[IndoorSensor] Reading out of valid range"));
   return false;
 }
 
