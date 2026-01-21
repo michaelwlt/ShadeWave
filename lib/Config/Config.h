@@ -24,6 +24,10 @@ const int PIR_SENSOR_PIN = 11;    // Digital pin for PIR motion sensor
 // LDR light sensor pin (analog)
 const int LDR_SENSOR_PIN = A0;    // Analog pin for LDR photo-resistor
 
+// Indoor SHT20 sensor pins (Software I2C via SoftWire)
+const int INDOOR_SDA_PIN = A1;    // Software I2C data pin
+const int INDOOR_SCL_PIN = A2;    // Software I2C clock pin
+
 // Command buffer size
 const int CMD_BUFFER_SIZE = 64;
 
