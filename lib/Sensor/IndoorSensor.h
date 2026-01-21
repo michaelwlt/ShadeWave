@@ -2,31 +2,31 @@
 #define INDOOR_SENSOR_H
 
 #include <Arduino.h>
-#include <OneWire.h>
-#include <DallasTemperature.h>
+#include <DFRobot_SHT20.h>
 
 namespace ShadeWave {
 namespace Sensor {
 
 class IndoorSensor {
 private:
-  OneWire oneWire;
-  DallasTemperature sensors;
+  DFRobot_SHT20 sht20;
   float temperature;
+  float humidity;
   bool ready;
 
 public:
-  IndoorSensor(uint8_t pin);
+  IndoorSensor();
   
-  // Initialize the DS18B20 sensor
+  // Initialize the SHT20 sensor
   bool begin();
   
-  // Read temperature from sensor
+  // Read temperature and humidity from sensor
   // Returns true if read was successful
   bool read();
   
-  // Getter for last reading
+  // Getters for last readings
   float getTemperature() const { return temperature; }
+  float getHumidity() const { return humidity; }
   
   // Check if sensor is connected and ready
   bool isReady() const { return ready; }

@@ -3,33 +3,24 @@
 namespace ShadeWave {
 namespace Sensor {
 
-IndoorSensor::IndoorSensor(uint8_t pin)
-  : oneWire(pin),
-    sensors(&oneWire),
-    temperature(0.0),
+IndoorSensor::IndoorSensor()
+  : temperature(0.0),
+    humidity(0.0),
     ready(false) {
 }
 
 bool IndoorSensor::begin() {
-  sensors.begin();
+  sht20.initSHT20();
+  delay(100);  // Give sensor time to initialize
   
-  // Check if any DS18B20 devices are found on the bus
-  if (sensors.getDeviceCount() == 0) {
-    ready = false;
-    return false;
-  }
+  // Try a test read to verify sensor is connected
+  float testTemp = sht20.readTemperature();
   
-  // Set resolution to 12-bit for highest accuracy
-  sensors.setResolution(12);
-  
-  // Try a test read to verify sensor is working
-  sensors.requestTemperatures();
-  float testTemp = sensors.getTempCByIndex(0);
-  
-  // Check if we got a valid reading (returns DEVICE_DISCONNECTED_C on error)
-  if (testTemp != DEVICE_DISCONNECTED_C) {
+  // Check if we got a valid reading (SHT20 returns very large negative values on error)
+  if (testTemp > -40.0 && testTemp < 125.0) {
     ready = true;
     temperature = testTemp;
+    humidity = sht20.readHumidity();
     return true;
   }
   
@@ -42,13 +33,14 @@ bool IndoorSensor::read() {
     return false;
   }
   
-  // Request temperature conversion
-  sensors.requestTemperatures();
-  float newTemp = sensors.getTempCByIndex(0);
+  float newTemp = sht20.readTemperature();
+  float newHumidity = sht20.readHumidity();
   
-  // Validate reading
-  if (newTemp != DEVICE_DISCONNECTED_C) {
+  // Validate readings are within sensor's operating range
+  if (newTemp >= -40.0 && newTemp <= 125.0 &&
+      newHumidity >= 0.0 && newHumidity <= 100.0) {
     temperature = newTemp;
+    humidity = newHumidity;
     return true;
   }
   
