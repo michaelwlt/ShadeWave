@@ -165,32 +165,8 @@ void SerialCommandProcessor::process() {
     
     if (strlen(command) == 0) return;
     
-    // Parse "set desiredTempThreshold <value>" command
-    if (strncmp(command, "set ", 4) == 0) {
-      char* cmd = command + 4; // Skip "set "
-      trim(cmd);
-      
-      // Find space between variable and value
-      char* spacePos = strchr(cmd, ' ');
-      if (spacePos != NULL) {
-        *spacePos = '\0'; // Split string
-        char* varName = cmd;
-        char* valueStr = spacePos + 1;
-        trim(valueStr);
-        
-        if (strEquals(varName, "desiredtempthreshold")) {
-          Serial.println();
-          setTemperatureFromInput(valueStr);
-        } 
-        else {
-          Serial.println(F("ERROR: Unknown variable. Only 'desiredTempThreshold' can be set."));
-        }
-      } else {
-        Serial.println(F("ERROR: Usage: set desiredTempThreshold <value>"));
-      }
-    }
     // Parse "status" command
-    else if (strEquals(command, "status")) {
+    if (strEquals(command, "status")) {
       Serial.println(F("\n--- Current Sensor Values ---"));
       Serial.print(F("roomOccupied: ")); Serial.println(sensors.getRoomOccupied() ? F("true") : F("false"));
       Serial.print(F("indoorTemp: ")); Serial.print(sensors.getIndoorTemp()); Serial.println(F("°C"));
