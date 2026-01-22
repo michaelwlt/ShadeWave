@@ -87,8 +87,9 @@ void SerialCommandProcessor::runSetupWizard() {
     Serial.println();
     Serial.print(F("Temperature threshold set to "));
     Serial.print(sensors.getDesiredTempThreshold());
-    Serial.println(F(" C"));
+    Serial.println(F("°C"));
     Serial.println(F("Setup complete!"));
+    Serial.println(F("Type 'help' to see available commands."));
     Serial.println();
     
     break;
@@ -181,7 +182,7 @@ void SerialCommandProcessor::process() {
             sensors.setDesiredTempThreshold(val);
             Serial.print(F("OK: desiredTempThreshold set to "));
             Serial.print(sensors.getDesiredTempThreshold());
-            Serial.println(F(" °C"));
+            Serial.println(F("°C"));
           } else {
             Serial.println(F("ERROR: Invalid temperature value"));
           }
