@@ -30,8 +30,8 @@ void BlindsController::updateServoPosition(BlindsState state) {
       angle = ShadeWave::Config::BLINDS_SERVO_NEUTRAL_ANGLE;
       break;
   }
-  servoMotor.write(angle);
-  servoMotor2.write(180 - angle);  // Inverted angle for second servo
+  servoMotor.write(180 - angle); // Inverted angle for right servo
+  servoMotor2.write(angle);  
 }
 
 void BlindsController::update(const Sensor::SensorData& sensors) {
@@ -63,17 +63,17 @@ void BlindsController::update(const Sensor::SensorData& sensors) {
 void BlindsController::testServo() {
   // Sweep both servos through all three positions for testing
   // Servo2 moves with inverted angle (180 - angle)
-  servoMotor.write(ShadeWave::Config::BLINDS_SERVO_CLOSED_ANGLE);
-  servoMotor2.write(180 - ShadeWave::Config::BLINDS_SERVO_CLOSED_ANGLE);
+  servoMotor.write(180 - ShadeWave::Config::BLINDS_SERVO_CLOSED_ANGLE);
+  servoMotor2.write(ShadeWave::Config::BLINDS_SERVO_CLOSED_ANGLE);
   delay(500);
-  servoMotor.write(ShadeWave::Config::BLINDS_SERVO_NEUTRAL_ANGLE);
-  servoMotor2.write(180 - ShadeWave::Config::BLINDS_SERVO_NEUTRAL_ANGLE);
+  servoMotor.write(180 - ShadeWave::Config::BLINDS_SERVO_NEUTRAL_ANGLE);
+  servoMotor2.write(ShadeWave::Config::BLINDS_SERVO_NEUTRAL_ANGLE);
   delay(500);
-  servoMotor.write(ShadeWave::Config::BLINDS_SERVO_OPEN_ANGLE);
-  servoMotor2.write(180 - ShadeWave::Config::BLINDS_SERVO_OPEN_ANGLE);
+  servoMotor.write(180 - ShadeWave::Config::BLINDS_SERVO_OPEN_ANGLE);
+  servoMotor2.write(ShadeWave::Config::BLINDS_SERVO_OPEN_ANGLE);
   delay(500);
-  servoMotor.write(ShadeWave::Config::BLINDS_SERVO_CLOSED_ANGLE);
-  servoMotor2.write(180 - ShadeWave::Config::BLINDS_SERVO_CLOSED_ANGLE);
+  servoMotor.write(180 - ShadeWave::Config::BLINDS_SERVO_CLOSED_ANGLE);
+  servoMotor2.write(ShadeWave::Config::BLINDS_SERVO_CLOSED_ANGLE);
   delay(500);
 }
 
