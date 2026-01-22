@@ -205,6 +205,20 @@ void SerialCommandProcessor::process() {
     else if (strEquals(command, "help")) {
       printHelp();
     }
+    // Handle "temp" command - interactive or with value
+    else if (strncmp(command, "temp", 4) == 0) {
+      char* rest = command + 4;
+      trim(rest);
+      
+      if (strlen(rest) == 0) {
+        // No value provided - run setup wizard
+        runSetupWizard();
+      } else {
+        // Value provided - direct set
+        Serial.println();
+        setTemperatureFromInput(rest);
+      }
+    }
     else {
       Serial.println(F("ERROR: Unknown command. Type 'help' for available commands."));
     }
@@ -213,9 +227,10 @@ void SerialCommandProcessor::process() {
 
 void SerialCommandProcessor::printHelp() {
   Serial.println(F("\n=== Available Commands ==="));
-  Serial.println(F("set desiredTempThreshold <value>  - Set temperature threshold (e.g. 24.0)"));
-  Serial.println(F("status                            - Show current system status"));
-  Serial.println(F("help                              - Show this help"));
+  Serial.println(F("temp                 - Change temperature threshold (guided)"));
+  Serial.println(F("temp <value>         - Set threshold directly (e.g. temp 24)"));
+  Serial.println(F("status               - Show current system status"));
+  Serial.println(F("help                 - Show this help"));
   Serial.println(F("==========================="));
 }
 
