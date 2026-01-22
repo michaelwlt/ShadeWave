@@ -28,13 +28,17 @@ void StateReporter::captureSnapshot(const Controller::VentController& vent,
 void StateReporter::reportIfChanged(const Sensor::SensorData& sensors,
                                     const Controller::VentController& vent,
                                     const Controller::BlindsController& blinds) {
-  if (needsReport || hasChanged(vent, blinds)) {
+  if (needsReport) {
+    // Initial startup: just show summary, no verbose logic
+    printSystemSummary(vent, blinds);
+    captureSnapshot(vent, blinds);
+    needsReport = false;
+  } else if (hasChanged(vent, blinds)) {
+    // Runtime change: show full verbose decision logic
     printVentLogic(sensors, vent);
     printBlindsLogic(sensors, blinds);
     printSystemSummary(vent, blinds);
-    
     captureSnapshot(vent, blinds);
-    needsReport = false;
   }
 }
 
