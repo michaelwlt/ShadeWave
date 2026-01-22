@@ -5,30 +5,18 @@
 namespace ShadeWave {
 namespace Controller {
 
-VentController::VentController(int openPin, int closedPin, int servoPin)
+VentController::VentController(int servoPin)
   : ventOpen(false),
-    openPin(openPin),
-    closedPin(closedPin),
     servoPin(servoPin) {
 }
 
 void VentController::initialize() {
-  pinMode(openPin, OUTPUT);
-  pinMode(closedPin, OUTPUT);
-  digitalWrite(openPin, LOW);
-  digitalWrite(closedPin, LOW);
-  
   // Initialize servo motor
   servoMotor.attach(servoPin);
   servoMotor.write(ShadeWave::Config::VENT_SERVO_CLOSED_ANGLE);
 }
 
-void VentController::updateVentOutputs(bool open) {
-  // Update LED indicators
-  digitalWrite(openPin, open ? HIGH : LOW);
-  digitalWrite(closedPin, open ? LOW : HIGH);
-  
-  // Update servo position
+void VentController::updateServoPosition(bool open) {
   int angle = open ? ShadeWave::Config::VENT_SERVO_OPEN_ANGLE : ShadeWave::Config::VENT_SERVO_CLOSED_ANGLE;
   servoMotor.write(angle);
 }

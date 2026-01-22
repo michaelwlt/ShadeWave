@@ -14,15 +14,13 @@ namespace Controller {
 class VentController {
 private:
   bool ventOpen;
-  int openPin;
-  int closedPin;
   int servoPin;
   Servo servoMotor;
   
   void updateVentOutputs(bool open);
 
 public:
-  VentController(int openPin, int closedPin, int servoPin);
+  VentController(int servoPin);
   
   void initialize();
   void update(const Sensor::SensorData& sensors);

@@ -18,8 +18,8 @@ Sensor::OutdoorSensor outdoorSensor;
 Sensor::IndoorSensor indoorSensor;
 Sensor::MotionSensor motionSensor(Config::PIR_SENSOR_PIN);
 Sensor::LightSensor lightSensor(Config::LDR_SENSOR_PIN);
-Controller::VentController vent(Config::VENT_OPEN_LED, Config::VENT_CLOSED_LED, Config::VENT_SERVO_PIN);
-Controller::BlindsController blinds(Config::BLINDS_OPEN_LED, Config::BLINDS_CLOSED_LED, Config::BLINDS_NEUTRAL_LED, Config::BLINDS_SERVO_PIN);
+Controller::VentController vent(Config::VENT_SERVO_PIN);
+Controller::BlindsController blinds(Config::BLINDS_SERVO_PIN);
 SerialCommand::SerialCommandProcessor cmdProcessor(sensors);
 State::StateReporter stateReporter;
 
@@ -28,7 +28,7 @@ void setup() {
   Serial.begin(9600);
   Serial.println(F("Smart Environment Control System Starting..."));
   
-  // Initialize controllers (sets up LED pins)
+  // Initialize controllers (sets up servo pins)
   vent.initialize();
   blinds.initialize();
   
@@ -53,38 +53,8 @@ void setup() {
   lightSensor.begin();
   Serial.println(F("LDR light sensor initialized"));
   
-  // Test all LEDs to verify they work
-  Serial.println(F("Testing all LEDs..."));
-  
-  Serial.println(F("Testing Pin 2 (Vent Open)..."));
-  digitalWrite(Config::VENT_OPEN_LED, HIGH);
-  delay(2000);
-  digitalWrite(Config::VENT_OPEN_LED, LOW);
-  delay(200);
-  
-  Serial.println(F("Testing Pin 3 (Vent Closed)..."));
-  digitalWrite(Config::VENT_CLOSED_LED, HIGH);
-  delay(2000);
-  digitalWrite(Config::VENT_CLOSED_LED, LOW);
-  delay(200);
-  
-  Serial.println(F("Testing Pin 4 (Blinds Open)..."));
-  digitalWrite(Config::BLINDS_OPEN_LED, HIGH);
-  delay(2000);
-  digitalWrite(Config::BLINDS_OPEN_LED, LOW);
-  delay(200);
-  
-  Serial.println(F("Testing Pin 5 (Blinds Closed)..."));
-  digitalWrite(Config::BLINDS_CLOSED_LED, HIGH);
-  delay(2000);
-  digitalWrite(Config::BLINDS_CLOSED_LED, LOW);
-  delay(200);
-  
-  Serial.println(F("Testing Pin 6 (Blinds Neutral)..."));
-  digitalWrite(Config::BLINDS_NEUTRAL_LED, HIGH);
-  delay(2000);
-  digitalWrite(Config::BLINDS_NEUTRAL_LED, LOW);
-  delay(200);
+  // Test servos
+  Serial.println(F("Testing servos..."));
   
   Serial.println(F("Testing Pin 9 (Vent Servo)..."));
   Serial.println(F("  Sweeping: CLOSED -> OPEN -> CLOSED"));
@@ -94,7 +64,7 @@ void setup() {
   Serial.println(F("  Sweeping: CLOSED -> NEUTRAL -> OPEN -> NEUTRAL"));
   blinds.testServo();
   
-  Serial.println(F("LED and Servo test complete. Starting system in 3 seconds..."));
+  Serial.println(F("Servo test complete. Starting system in 3 seconds..."));
   delay(3000);
   Serial.println(F("System initialized. Starting control loop..."));
   cmdProcessor.printHelp();

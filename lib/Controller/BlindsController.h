@@ -20,16 +20,13 @@ enum class BlindsState {
 class BlindsController {
 private:
   BlindsState blindsState;
-  int openPin;
-  int closedPin;
-  int neutralPin;
   int servoPin;
   Servo servoMotor;
   
-  void updateBlindsLEDs(BlindsState state);
+  void updateServoPosition(BlindsState state);
 
 public:
-  BlindsController(int openPin, int closedPin, int neutralPin, int servoPin);
+  BlindsController(int servoPin);
   
   void initialize();
   void update(const Sensor::SensorData& sensors);
