@@ -38,17 +38,8 @@ void SerialCommandProcessor::runSetupWizard() {
       // Wait
     }
     
-    // Read input line
-    int index = 0;
-    while (index < CMD_BUFFER_SIZE - 1) {
-      if (Serial.available() > 0) {
-        char c = Serial.read();
-        if (c == '\n' || c == '\r') break;
-        input[index++] = c;
-      }
-    }
-    input[index] = '\0';
-    
+    // Read input line using helper
+    readSerialLine(input, CMD_BUFFER_SIZE);
     trim(input);
     
     if (strlen(input) == 0) {
@@ -56,43 +47,14 @@ void SerialCommandProcessor::runSetupWizard() {
       continue;
     }
     
-    // Parse the temperature value
-    float val = atof(input);
-    
-    // Validate: atof returns 0.0 for invalid input, so check if it's actually "0"
-    bool isValidNumber = (val != 0.0) || (strcmp(input, "0") == 0) || (strcmp(input, "0.0") == 0);
-    
-    if (!isValidNumber) {
-      Serial.println(F("Invalid input. Please enter a number (e.g. 23.0)"));
-      continue;
+    // Validate and set temperature using helper
+    if (setTemperatureFromInput(input)) {
+      Serial.println(F("\nSetup complete!"));
+      Serial.println(F("Type 'help' to see available commands."));
+      Serial.println();
+      break;
     }
-    
-    // Validate reasonable range
-    if (val < 0 || val > 50) {
-      Serial.println(F("Invalid temperature. Please enter a value between 0 and 50."));
-      continue;
-    }
-    
-    // Warn if outside suggested range but allow
-    if (val < 18.0 || val > 30.0) {
-      Serial.print(F("Note: "));
-      Serial.print(val);
-      Serial.println(F(" is outside the typical range (18-30)."));
-    }
-    
-    // Set the threshold
-    sensors.setDesiredTempThreshold(val);
-    
-    // Confirm
-    Serial.println();
-    Serial.print(F("Temperature threshold set to "));
-    Serial.print(sensors.getDesiredTempThreshold());
-    Serial.println(F("°C"));
-    Serial.println(F("Setup complete!"));
-    Serial.println(F("Type 'help' to see available commands."));
-    Serial.println();
-    
-    break;
+    // If validation failed, loop continues for retry
   }
 }
 
@@ -142,21 +104,61 @@ bool SerialCommandProcessor::strEquals(const char* a, const char* b) {
   return (*a == '\0' && *b == '\0');
 }
 
+int SerialCommandProcessor::readSerialLine(char* buffer, int maxLen) {
+  int index = 0;
+  while (index < maxLen - 1) {
+    if (Serial.available() > 0) {
+      char c = Serial.read();
+      if (c == '\n' || c == '\r') break;
+      buffer[index++] = c;
+    }
+  }
+  buffer[index] = '\0';
+  return index;
+}
+
+bool SerialCommandProcessor::setTemperatureFromInput(const char* input) {
+  // Parse the temperature value
+  float val = atof(input);
+  
+  // Validate: atof returns 0.0 for invalid input, so check if it's actually "0"
+  bool isValidNumber = (val != 0.0) || (strcmp(input, "0") == 0) || (strcmp(input, "0.0") == 0);
+  
+  if (!isValidNumber) {
+    Serial.println(F("Invalid input. Please enter a number (e.g. 23.0)"));
+    return false;
+  }
+  
+  // Validate hard range
+  if (val < 0 || val > 50) {
+    Serial.println(F("Invalid temperature. Please enter a value between 0 and 50°C."));
+    return false;
+  }
+  
+  // Set the threshold
+  sensors.setDesiredTempThreshold(val);
+  
+  // Confirm
+  Serial.print(F("Temperature threshold set to "));
+  Serial.print(sensors.getDesiredTempThreshold());
+  Serial.println(F("°C"));
+  
+    // Warn if outside suggested range but allow (soft warning)
+    if (val < 18.0 || val > 30.0) {
+      Serial.print(F("> Note: "));
+      Serial.print(val);
+      Serial.println(F("°C is outside the typical range."));
+    }
+  return true;
+}
+
 void SerialCommandProcessor::process() {
   // Check if serial data is available
   if (Serial.available() > 0) {
     char command[CMD_BUFFER_SIZE];
-    int index = 0;
     
-    // Read until newline or buffer full
-    while (index < CMD_BUFFER_SIZE - 1) {
-      if (Serial.available() > 0) {
-        char c = Serial.read();
-        if (c == '\n' || c == '\r') break;
-        command[index++] = c;
-      }
-    }
-    command[index] = '\0';
+    // Read input line using helper
+    readSerialLine(command, CMD_BUFFER_SIZE);
     
     trim(command);
     toLowerCase(command);
@@ -177,15 +179,8 @@ void SerialCommandProcessor::process() {
         trim(valueStr);
         
         if (strEquals(varName, "desiredtempthreshold")) {
-          float val = atof(valueStr);
-          if (val != 0.0 || strEquals(valueStr, "0") || strEquals(valueStr, "0.0")) {
-            sensors.setDesiredTempThreshold(val);
-            Serial.print(F("OK: desiredTempThreshold set to "));
-            Serial.print(sensors.getDesiredTempThreshold());
-            Serial.println(F("°C"));
-          } else {
-            Serial.println(F("ERROR: Invalid temperature value"));
-          }
+          Serial.println();
+          setTemperatureFromInput(valueStr);
         } 
         else {
           Serial.println(F("ERROR: Unknown variable. Only 'desiredTempThreshold' can be set."));

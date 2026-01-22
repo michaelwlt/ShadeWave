@@ -19,6 +19,8 @@ private:
   void toLowerCase(char* str);
   void trim(char* str);
   bool strEquals(const char* a, const char* b);
+  int readSerialLine(char* buffer, int maxLen);
+  bool setTemperatureFromInput(const char* input);
 
 public:
   SerialCommandProcessor(Sensor::SensorData& sensors);
