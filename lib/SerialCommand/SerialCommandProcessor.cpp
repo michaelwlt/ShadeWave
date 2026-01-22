@@ -13,6 +13,88 @@ SerialCommandProcessor::SerialCommandProcessor(Sensor::SensorData& sensors)
   : sensors(sensors) {
 }
 
+void SerialCommandProcessor::runSetupWizard() {
+  // Display welcome banner
+  Serial.println(F("\n========================================"));
+  Serial.println(F("   SHADEWAVE - Smart Environment Control"));
+  Serial.println(F("========================================"));
+  Serial.println();
+  Serial.println(F("Welcome! Let's configure your system."));
+  Serial.println();
+  Serial.println(F("The temperature threshold determines when"));
+  Serial.println(F("the system considers the room \"too hot\""));
+  Serial.println(F("and activates cooling (opens vents)."));
+  Serial.println();
+  Serial.println(F("Enter your preferred temperature"));
+  Serial.println(F("in degrees Celsius (e.g. 23.0):"));
+  
+  char input[CMD_BUFFER_SIZE];
+  
+  while (true) {
+    Serial.print(F("> "));
+    
+    // Wait for input (blocking)
+    while (Serial.available() == 0) {
+      // Wait
+    }
+    
+    // Read input line
+    int index = 0;
+    while (index < CMD_BUFFER_SIZE - 1) {
+      if (Serial.available() > 0) {
+        char c = Serial.read();
+        if (c == '\n' || c == '\r') break;
+        input[index++] = c;
+      }
+    }
+    input[index] = '\0';
+    
+    trim(input);
+    
+    if (strlen(input) == 0) {
+      Serial.println(F("Please enter a value."));
+      continue;
+    }
+    
+    // Parse the temperature value
+    float val = atof(input);
+    
+    // Validate: atof returns 0.0 for invalid input, so check if it's actually "0"
+    bool isValidNumber = (val != 0.0) || (strcmp(input, "0") == 0) || (strcmp(input, "0.0") == 0);
+    
+    if (!isValidNumber) {
+      Serial.println(F("Invalid input. Please enter a number (e.g. 23.0)"));
+      continue;
+    }
+    
+    // Validate reasonable range
+    if (val < 0 || val > 50) {
+      Serial.println(F("Invalid temperature. Please enter a value between 0 and 50."));
+      continue;
+    }
+    
+    // Warn if outside suggested range but allow
+    if (val < 18.0 || val > 30.0) {
+      Serial.print(F("Note: "));
+      Serial.print(val);
+      Serial.println(F(" is outside the typical range (18-30)."));
+    }
+    
+    // Set the threshold
+    sensors.setDesiredTempThreshold(val);
+    
+    // Confirm
+    Serial.println();
+    Serial.print(F("Temperature threshold set to "));
+    Serial.print(sensors.getDesiredTempThreshold());
+    Serial.println(F(" C"));
+    Serial.println(F("Setup complete!"));
+    Serial.println();
+    
+    break;
+  }
+}
+
 void SerialCommandProcessor::toLowerCase(char* str) {
   for (int i = 0; str[i]; i++) {
     if (str[i] >= 'A' && str[i] <= 'Z') {
@@ -80,7 +162,7 @@ void SerialCommandProcessor::process() {
     
     if (strlen(command) == 0) return;
     
-    // Parse "set <variable> <value>" command
+    // Parse "set desiredTempThreshold <value>" command
     if (strncmp(command, "set ", 4) == 0) {
       char* cmd = command + 4; // Skip "set "
       trim(cmd);
@@ -93,87 +175,22 @@ void SerialCommandProcessor::process() {
         char* valueStr = spacePos + 1;
         trim(valueStr);
         
-        // Parse boolean values
-        if (strEquals(varName, "roomoccupied")) {
-          if (strEquals(valueStr, "true") || strEquals(valueStr, "1")) {
-            sensors.setRoomOccupied(true);
-            Serial.println(F("OK: roomOccupied set to true"));
-          } else if (strEquals(valueStr, "false") || strEquals(valueStr, "0")) {
-            sensors.setRoomOccupied(false);
-            Serial.println(F("OK: roomOccupied set to false"));
-          } else {
-            Serial.println(F("ERROR: Invalid value. Use 'true' or 'false'"));
-          }
-        }
-        else if (strEquals(varName, "sunlightintense")) {
-          if (strEquals(valueStr, "true") || strEquals(valueStr, "1")) {
-            sensors.setSunlightIntense(true);
-            Serial.println(F("OK: sunlightIntense set to true"));
-          } else if (strEquals(valueStr, "false") || strEquals(valueStr, "0")) {
-            sensors.setSunlightIntense(false);
-            Serial.println(F("OK: sunlightIntense set to false"));
-          } else {
-            Serial.println(F("ERROR: Invalid value. Use 'true' or 'false'"));
-          }
-        }
-        // Parse float values
-        else if (strEquals(varName, "indoortemp")) {
-          float val = atof(valueStr);
-          if (val != 0.0 || strEquals(valueStr, "0") || strEquals(valueStr, "0.0")) {
-            sensors.setIndoorTemp(val);
-            Serial.print(F("OK: indoorTemp set to "));
-            Serial.println(sensors.getIndoorTemp());
-          } else {
-            Serial.println(F("ERROR: Invalid temperature value"));
-          }
-        }
-        else if (strEquals(varName, "outdoortemp")) {
-          float val = atof(valueStr);
-          if (val != 0.0 || strEquals(valueStr, "0") || strEquals(valueStr, "0.0")) {
-            sensors.setOutdoorTemp(val);
-            Serial.print(F("OK: outdoorTemp set to "));
-            Serial.println(sensors.getOutdoorTemp());
-          } else {
-            Serial.println(F("ERROR: Invalid temperature value"));
-          }
-        }
-        else if (strEquals(varName, "indoorhumidity")) {
-          float val = atof(valueStr);
-          if (val != 0.0 || strEquals(valueStr, "0") || strEquals(valueStr, "0.0")) {
-            sensors.setIndoorHumidity(val);
-            Serial.print(F("OK: indoorHumidity set to "));
-            Serial.println(sensors.getIndoorHumidity());
-          } else {
-            Serial.println(F("ERROR: Invalid humidity value"));
-          }
-        }
-        else if (strEquals(varName, "outdoorhumidity")) {
-          float val = atof(valueStr);
-          if (val != 0.0 || strEquals(valueStr, "0") || strEquals(valueStr, "0.0")) {
-            sensors.setOutdoorHumidity(val);
-            Serial.print(F("OK: outdoorHumidity set to "));
-            Serial.println(sensors.getOutdoorHumidity());
-          } else {
-            Serial.println(F("ERROR: Invalid humidity value"));
-          }
-        }
-        else if (strEquals(varName, "desiredtempthreshold")) {
+        if (strEquals(varName, "desiredtempthreshold")) {
           float val = atof(valueStr);
           if (val != 0.0 || strEquals(valueStr, "0") || strEquals(valueStr, "0.0")) {
             sensors.setDesiredTempThreshold(val);
             Serial.print(F("OK: desiredTempThreshold set to "));
             Serial.print(sensors.getDesiredTempThreshold());
-            Serial.println(F("°C"));
+            Serial.println(F(" C"));
           } else {
-            Serial.println(F("ERROR: Invalid temperature threshold value"));
+            Serial.println(F("ERROR: Invalid temperature value"));
           }
         } 
         else {
-          Serial.println(F("ERROR: Unknown variable name"));
-          Serial.println(F("Available: roomOccupied, indoorTemp, outdoorTemp, indoorHumidity, outdoorHumidity, sunlightIntense, desiredTempThreshold"));
+          Serial.println(F("ERROR: Unknown variable. Only 'desiredTempThreshold' can be set."));
         }
       } else {
-        Serial.println(F("ERROR: Invalid command format. Use: set <variable> <value>"));
+        Serial.println(F("ERROR: Usage: set desiredTempThreshold <value>"));
       }
     }
     // Parse "status" command
@@ -200,18 +217,10 @@ void SerialCommandProcessor::process() {
 
 void SerialCommandProcessor::printHelp() {
   Serial.println(F("\n=== Available Commands ==="));
-  Serial.println(F("set <variable> <value>    - Set sensor value"));
-  Serial.println(F("  Variables:"));
-  Serial.println(F("    roomOccupied          - true/false"));
-  Serial.println(F("    indoorTemp            - float (e.g., 25.5)"));
-  Serial.println(F("    outdoorTemp           - float (e.g., 20.0)"));
-  Serial.println(F("    indoorHumidity        - float (e.g., 50.0)"));
-  Serial.println(F("    outdoorHumidity       - float (e.g., 70.0)"));
-  Serial.println(F("    sunlightIntense       - true/false"));
-  Serial.println(F("    desiredTempThreshold  - float (e.g., 24.0)"));
-  Serial.println(F("status                   - Show all sensor values"));
-  Serial.println(F("help                     - Show this help"));
-  Serial.println(F("=========================="));
+  Serial.println(F("set desiredTempThreshold <value>  - Set temperature threshold (e.g. 24.0)"));
+  Serial.println(F("status                            - Show current system status"));
+  Serial.println(F("help                              - Show this help"));
+  Serial.println(F("==========================="));
 }
 
 } // namespace SerialCommand

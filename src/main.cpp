@@ -24,51 +24,60 @@ SerialCommand::SerialCommandProcessor cmdProcessor(sensors);
 State::StateReporter stateReporter;
 
 void setup() {
-  // Initialize serial communication for debugging
+  // Initialize serial communication
   Serial.begin(9600);
-  Serial.println(F("Smart Environment Control System Starting..."));
+  
+  // Run setup wizard
+  cmdProcessor.runSetupWizard();
+  delay(1000);
+  
+  // Initialize hardware
+  Serial.println(F("Initializing hardware..."));
   
   // Initialize controllers (sets up servo pins)
+  Serial.print(F("  Controllers... "));
   vent.initialize();
   blinds.initialize();
+  Serial.println(F("OK"));
   
   // Initialize outdoor sensor (SHT20)
+  Serial.print(F("  Outdoor sensor... "));
   if (outdoorSensor.begin()) {
-    Serial.println(F("SHT20 outdoor sensor initialized"));
+    Serial.println(F("OK"));
   } else {
-    Serial.println(F("SHT20 sensor not found!"));
+    Serial.println(F("NOT FOUND"));
   }
   
   // Initialize indoor sensor (SHT20 via Software I2C)
+  Serial.print(F("  Indoor sensor... "));
   if (indoorSensor.begin()) {
-    Serial.println(F("SHT20 indoor sensor initialized"));
+    Serial.println(F("OK"));
   } else {
-    Serial.println(F("SHT20 indoor sensor not found!"));
+    Serial.println(F("NOT FOUND"));
   }
   
-    // Initialize motion sensor (PIR) - blocks during 30s warm-up
-    motionSensor.begin();
+  // Initialize motion sensor
+  motionSensor.begin();
   
-  // Initialize light sensor (LDR)
+  // Initialize light sensor
+  Serial.print(F("  Light sensor... "));
   lightSensor.begin();
-  Serial.println(F("LDR light sensor initialized"));
+  Serial.println(F("OK"));
   
   // Test servos
-  Serial.println(F("Testing servos..."));
+  Serial.println(F("\nTesting servos..."));
   
-  Serial.println(F("Testing Pin 9 (Vent Servo)..."));
-  Serial.println(F("  Sweeping: CLOSED -> OPEN -> CLOSED"));
+  Serial.println(F("  Vent servo: CLOSED -> OPEN -> CLOSED"));
   vent.testServo();
   
-  Serial.println(F("Testing Pin 10 (Blinds Servo)..."));
-  Serial.println(F("  Sweeping: CLOSED -> NEUTRAL -> OPEN -> NEUTRAL"));
+  Serial.println(F("  Blinds servo: CLOSED -> NEUTRAL -> OPEN -> NEUTRAL"));
   blinds.testServo();
   
-  Serial.println(F("Servo test complete. Starting system in 3 seconds..."));
-  delay(3000);
-  Serial.println(F("System initialized. Starting control loop..."));
+  Serial.println(F("\nHardware initialization complete."));
+  Serial.println(F("Starting control loop...\n"));
+  
+  // Show available commands
   cmdProcessor.printHelp();
-  delay(1000);
   
   // Initial state update and report
   vent.update(sensors);

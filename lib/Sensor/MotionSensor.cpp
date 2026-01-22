@@ -19,7 +19,7 @@ bool MotionSensor::begin() {
   initTime = millis();
   
   // Block until warm-up period has elapsed
-  Serial.print(F("PIR sensor warming up"));
+  Serial.print(F("  Motion sensor warming up"));
   while (!isReady()) {
     Serial.print(F("."));
     delay(1000);  // Print a dot every second

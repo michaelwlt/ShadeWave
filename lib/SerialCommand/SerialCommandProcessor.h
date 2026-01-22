@@ -23,6 +23,7 @@ private:
 public:
   SerialCommandProcessor(Sensor::SensorData& sensors);
   
+  void runSetupWizard();  // Blocking setup for first-time configuration
   void process();
   void printHelp();
 };
