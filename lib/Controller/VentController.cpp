@@ -13,7 +13,7 @@ VentController::VentController(int servoPin)
 void VentController::initialize() {
   // Initialize servo motor
   servoMotor.attach(servoPin);
-  servoMotor.write(ShadeWave::Config::VENT_SERVO_CLOSED_ANGLE);
+  testServo();
 }
 
 void VentController::updateServoPosition(bool open) {

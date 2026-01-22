@@ -30,13 +30,16 @@ void setup() {
   // Run setup wizard
   cmdProcessor.runSetupWizard();
   delay(1000);
-  
+
   // Initialize hardware
   Serial.println(F("Initializing hardware..."));
   
-  // Initialize controllers (sets up servo pins)
-  Serial.print(F("  Controllers... "));
+  // Initialize controllers (sets up servo pins and tests them)
+  Serial.print(F("  Vent controller... "));
   vent.initialize();
+  Serial.println(F("OK"));
+  
+  Serial.print(F("  Blinds controller... "));
   blinds.initialize();
   Serial.println(F("OK"));
   
@@ -63,15 +66,6 @@ void setup() {
   Serial.print(F("  Light sensor... "));
   lightSensor.begin();
   Serial.println(F("OK"));
-  
-  // Test servos
-  Serial.println(F("\nTesting servos..."));
-  
-  Serial.println(F("  Vent servo: CLOSED -> OPEN -> CLOSED"));
-  vent.testServo();
-  
-  Serial.println(F("  Blinds servo: CLOSED -> NEUTRAL -> OPEN -> NEUTRAL"));
-  blinds.testServo();
   
   Serial.println(F("\nHardware initialization complete."));
   Serial.println(F("Starting control loop...\n"));

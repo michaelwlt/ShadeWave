@@ -12,7 +12,7 @@ BlindsController::BlindsController(int servoPin)
 
 void BlindsController::initialize() {
   servoMotor.attach(servoPin);
-  servoMotor.write(ShadeWave::Config::BLINDS_SERVO_NEUTRAL_ANGLE);
+  testServo();
 }
 
 void BlindsController::updateServoPosition(BlindsState state) {
@@ -63,7 +63,7 @@ void BlindsController::testServo() {
   delay(500);
   servoMotor.write(ShadeWave::Config::BLINDS_SERVO_OPEN_ANGLE);
   delay(500);
-  servoMotor.write(ShadeWave::Config::BLINDS_SERVO_NEUTRAL_ANGLE);
+  servoMotor.write(ShadeWave::Config::BLINDS_SERVO_CLOSED_ANGLE);
   delay(500);
 }
 
