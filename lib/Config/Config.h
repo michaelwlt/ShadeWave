@@ -35,7 +35,7 @@ const int CMD_BUFFER_SIZE = 64;
 
 // Timing configuration
 const unsigned long MAIN_LOOP_INTERVAL_MS = 5000;  // Main loop runs every 5 seconds
-const unsigned long PIR_WARMUP_MS = 20000;         // Motion sensor warm-up time (20 seconds)
+const unsigned long PIR_WARMUP_MS = 5000;         // Motion sensor warm-up time (5 seconds)
 
 } // namespace Config
 } // namespace ShadeWave
