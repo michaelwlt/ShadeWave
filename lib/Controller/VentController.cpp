@@ -25,7 +25,7 @@ void VentController::update(const Sensor::SensorData& sensors) {
   if (!sensors.getRoomOccupied()) {
     // Energy saving mode: Close vents
     ventOpen = false;
-    updateVentOutputs(false);
+    updateServoPosition(false);
     return;
   }
   
@@ -35,16 +35,16 @@ void VentController::update(const Sensor::SensorData& sensors) {
     if (sensors.getIndoorHumidity() > sensors.getOutdoorHumidity()) {
       // Higher humidity inside - open vent to ventilate
       ventOpen = true;
-      updateVentOutputs(true);
+      updateServoPosition(true);
     } else {
       // Lower/equal humidity inside - keep closed
       ventOpen = false;
-      updateVentOutputs(false);
+      updateServoPosition(false);
     }
   } else {
     // Not hot inside OR warmer/equal outside - no cooling needed
     ventOpen = false;
-    updateVentOutputs(false);
+    updateServoPosition(false);
   }
 }
 

@@ -17,7 +17,7 @@ private:
   int servoPin;
   Servo servoMotor;
   
-  void updateVentOutputs(bool open);
+  void updateServoPosition(bool open);
 
 public:
   VentController(int servoPin);
