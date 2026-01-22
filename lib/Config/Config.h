@@ -43,7 +43,6 @@ const int BLINDS_SERVO_NEUTRAL_ANGLE = 90;   // degrees when blinds are neutral
 const int BLINDS_SERVO_CLOSED_ANGLE = 0;     // degrees when blinds are closed
 
 // Thresholds
-const float HIGH_HUMIDITY_THRESHOLD = 75.0;  // Humidity percentage considered "high"
 const float HOT_TEMP_THRESHOLD = 24.0;       // Temperature considered "hot" for summer mode
 const int LDR_INTENSE_THRESHOLD = 300;       // Analog reading at or below this = intense sunlight (LDR: lower = brighter)
 

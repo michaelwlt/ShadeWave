@@ -12,8 +12,7 @@ SensorData::SensorData()
     outdoorHumidity(70.0),
     sunlightIntense(true),
     isHotInside(false),
-    desiredTempThreshold(ShadeWave::Config::HOT_TEMP_THRESHOLD),
-    humidityThreshold(ShadeWave::Config::HIGH_HUMIDITY_THRESHOLD) {
+    desiredTempThreshold(ShadeWave::Config::HOT_TEMP_THRESHOLD) {
   updateDerivedValues();
 }
 
@@ -45,10 +44,6 @@ void SensorData::setSunlightIntense(bool value) {
 void SensorData::setDesiredTempThreshold(float value) {
   desiredTempThreshold = value;
   updateDerivedValues(); // Recalculate isHotInside with new threshold
-}
-
-void SensorData::setHumidityThreshold(float value) {
-  humidityThreshold = value;
 }
 
 void SensorData::updateDerivedValues() {

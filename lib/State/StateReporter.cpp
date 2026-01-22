@@ -49,7 +49,7 @@ void StateReporter::printVentLogic(const Sensor::SensorData& sensors, const Cont
     
     if (sensors.getOutdoorTemp() < sensors.getIndoorTemp()) {
       Serial.println(F("Outdoor < Indoor (Cooler Outside)"));
-      if (sensors.getOutdoorHumidity() > sensors.getHumidityThreshold()) {
+      if (sensors.getOutdoorHumidity() > sensors.getIndoorHumidity()) {
         Serial.println(F("Outdoor humidity is HIGH"));
         Serial.println(F("Action: Keep Vents Closed - High Humidity"));
       } else {
