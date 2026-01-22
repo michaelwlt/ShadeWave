@@ -21,12 +21,14 @@ class BlindsController {
 private:
   BlindsState blindsState;
   int servoPin;
+  int servoPin2;           
   Servo servoMotor;
+  Servo servoMotor2;       
   
   void updateServoPosition(BlindsState state);
 
 public:
-  BlindsController(int servoPin);
+  BlindsController(int servoPin, int servoPin2);
   
   void initialize();
   void update(const Sensor::SensorData& sensors);

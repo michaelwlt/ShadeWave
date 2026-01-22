@@ -21,6 +21,7 @@ const int VENT_SERVO_CLOSED_ANGLE = 0;   // degrees when vent is closed
 
 // Servo configuration for blinds
 const int BLINDS_SERVO_PIN = 10;
+const int BLINDS_SERVO_2_PIN = 8;    // Second blinds servo (inverted)
 const int BLINDS_SERVO_OPEN_ANGLE = 180;     // degrees when blinds are open
 const int BLINDS_SERVO_NEUTRAL_ANGLE = 90;   // degrees when blinds are neutral
 const int BLINDS_SERVO_CLOSED_ANGLE = 0;     // degrees when blinds are closed

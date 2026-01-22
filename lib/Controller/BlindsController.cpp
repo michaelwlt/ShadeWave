@@ -5,28 +5,33 @@
 namespace ShadeWave {
 namespace Controller {
 
-BlindsController::BlindsController(int servoPin)
+BlindsController::BlindsController(int servoPin, int servoPin2)
   : blindsState(BlindsState::NEUTRAL),
-    servoPin(servoPin) {
+    servoPin(servoPin),
+    servoPin2(servoPin2) {
 }
 
 void BlindsController::initialize() {
   servoMotor.attach(servoPin);
+  servoMotor2.attach(servoPin2);
   testServo();
 }
 
 void BlindsController::updateServoPosition(BlindsState state) {
+  int angle;
   switch(state) {
     case BlindsState::OPEN:
-      servoMotor.write(ShadeWave::Config::BLINDS_SERVO_OPEN_ANGLE);
+      angle = ShadeWave::Config::BLINDS_SERVO_OPEN_ANGLE;
       break;
     case BlindsState::CLOSED:
-      servoMotor.write(ShadeWave::Config::BLINDS_SERVO_CLOSED_ANGLE);
+      angle = ShadeWave::Config::BLINDS_SERVO_CLOSED_ANGLE;
       break;
     case BlindsState::NEUTRAL:
-      servoMotor.write(ShadeWave::Config::BLINDS_SERVO_NEUTRAL_ANGLE);
+      angle = ShadeWave::Config::BLINDS_SERVO_NEUTRAL_ANGLE;
       break;
   }
+  servoMotor.write(angle);
+  servoMotor2.write(180 - angle);  // Inverted angle for second servo
 }
 
 void BlindsController::update(const Sensor::SensorData& sensors) {
@@ -56,14 +61,19 @@ void BlindsController::update(const Sensor::SensorData& sensors) {
 }
 
 void BlindsController::testServo() {
-  // Sweep servo through all three positions for testing
+  // Sweep both servos through all three positions for testing
+  // Servo2 moves with inverted angle (180 - angle)
   servoMotor.write(ShadeWave::Config::BLINDS_SERVO_CLOSED_ANGLE);
+  servoMotor2.write(180 - ShadeWave::Config::BLINDS_SERVO_CLOSED_ANGLE);
   delay(500);
   servoMotor.write(ShadeWave::Config::BLINDS_SERVO_NEUTRAL_ANGLE);
+  servoMotor2.write(180 - ShadeWave::Config::BLINDS_SERVO_NEUTRAL_ANGLE);
   delay(500);
   servoMotor.write(ShadeWave::Config::BLINDS_SERVO_OPEN_ANGLE);
+  servoMotor2.write(180 - ShadeWave::Config::BLINDS_SERVO_OPEN_ANGLE);
   delay(500);
   servoMotor.write(ShadeWave::Config::BLINDS_SERVO_CLOSED_ANGLE);
+  servoMotor2.write(180 - ShadeWave::Config::BLINDS_SERVO_CLOSED_ANGLE);
   delay(500);
 }
 

@@ -19,7 +19,7 @@ Sensor::IndoorSensor indoorSensor;
 Sensor::MotionSensor motionSensor(Config::PIR_SENSOR_PIN);
 Sensor::LightSensor lightSensor(Config::LDR_SENSOR_PIN);
 Controller::VentController vent(Config::VENT_SERVO_PIN);
-Controller::BlindsController blinds(Config::BLINDS_SERVO_PIN);
+Controller::BlindsController blinds(Config::BLINDS_SERVO_PIN, Config::BLINDS_SERVO_2_PIN);
 SerialCommand::SerialCommandProcessor cmdProcessor(sensors);
 State::StateReporter stateReporter;
 
