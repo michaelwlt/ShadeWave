@@ -29,7 +29,7 @@ void setup() {
   
   // Run setup wizard
   cmdProcessor.runSetupWizard();
-  delay(1000);
+  delay(2000);
 
   // Initialize hardware
   Serial.println(F("Initializing hardware..."));
@@ -68,10 +68,7 @@ void setup() {
   Serial.println(F("OK"));
   
   Serial.println(F("\nHardware initialization complete."));
-  Serial.println(F("Starting control loop...\n"));
-  
-  // Show available commands
-  cmdProcessor.printHelp();
+  Serial.println(F("Starting control loop..."));
   
   // Initial state update and report
   vent.update(sensors);
