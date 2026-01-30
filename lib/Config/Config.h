@@ -20,8 +20,8 @@ const int VENT_SERVO_OPEN_ANGLE = 120;    // degrees when vent is open
 const int VENT_SERVO_CLOSED_ANGLE = 180;   // degrees when vent is closed
 
 // Servo configuration for blinds
-const int BLINDS_SERVO_PIN = 10;            //right
-const int BLINDS_SERVO_2_PIN = 8;            //left   
+const int BLINDS_SERVO_PIN = 10;            // right
+const int BLINDS_SERVO_2_PIN = 8;            // left   
 const int BLINDS_SERVO_OPEN_ANGLE = 100;     // degrees when blinds are open
 const int BLINDS_SERVO_NEUTRAL_ANGLE = 150;   // degrees when blinds are neutral
 const int BLINDS_SERVO_CLOSED_ANGLE = 180;     // degrees when blinds are closed
